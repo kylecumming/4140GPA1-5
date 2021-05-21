@@ -2,7 +2,7 @@ Steps to execute
 
 - step 1
     
-    Download the A1.sql file from our repository.
+    Download the A1_forward.sql file from our repository.
     
 - step 2
     
