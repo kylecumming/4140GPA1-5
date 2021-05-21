@@ -6,8 +6,9 @@ Steps to execute
     
 - step 2
     
-    Open the file in text editer and change all the schema name 'eeddy' and 'mydb'
-    to your own schema names. (Don't forget to change 'eeddy' in the line of 'REFERENCE')
+    Open the file in text editer and change all the schema name 'eeddy'
+    to your own schema names. 
+    (Don't forget to change 'eeddy' in the line of 'REFERENCE')
     
 - step 3 
     
