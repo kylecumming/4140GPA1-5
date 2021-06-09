@@ -1,3 +1,4 @@
+Read me for A1
 Steps to execute
 
 - step 1
@@ -13,3 +14,5 @@ Steps to execute
 - step 3 
     
     Execute the sql file in MySQL Workbench
+
+Read me for A2
