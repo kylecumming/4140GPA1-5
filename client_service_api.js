@@ -17,7 +17,7 @@ connection.connect(function (err) {
     console.log('Connected to the MySQL server.');
 });
 
-app.get('/api/getPart17', (req, res) => {
+app.get('/api/getParts17', (req, res) => {
 
     let SQL_list_parts = 'SELECT * FROM parts17';
     connection.query(SQL_list_parts, (error, result) => {
