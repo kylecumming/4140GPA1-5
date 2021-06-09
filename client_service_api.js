@@ -17,6 +17,21 @@ connection.connect(function (err) {
     console.log('Connected to the MySQL server.');
 });
 
+app.get('/api/getPart17', (req, res) => {
+
+    let SQL_list_parts = 'SELECT * FROM parts17';
+    connection.query(SQL_list_parts, (error, result) => {
+        if (error) {
+            throw error
+        } else if (result.length === 0) {
+            res.status(404).send(`Error: there are no parts in the list`)
+        } else {
+            res.send(result)
+        }
+    });
+
+})
+
 app.get('/api/getPOs17/:poNo17', (req, res) => {
 
     let SQL_list_one_po = 'SELECT * FROM POs17 WHERE poNo17 = ?';
