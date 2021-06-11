@@ -61,6 +61,35 @@ app.get('/api/company/getPOList17', (req, res) => {
     });
 });
 
+app.get('/api/company/getClientList17', (req, res) => {
+    
+    let client_info = "SELECT * FROM clientUser17";
+    connection.query(client_info, (error, result) => {
+        if(error){
+            throw error
+        } else if (result.length === 0){
+            res.status(404).send(`Error: client is empty`)
+        } else {
+            res.send(result)
+        }
+    })
+})
+
+app.get('/api/company/getSpecificClient17/:id', (req, res) => {
+
+    let specific_client  = 'SELECT * FROM clientUser17 WHERE id = ?';
+    connection.query(specific_client , [req.params.id], (error, result) => {
+        if (error) {
+            throw error
+        } else if (result.length === 0) {
+            res.status(404).send(`Error: Client with ID ${req.params.poNo17} was not found`)
+        } else {
+            res.send(result[0])
+        }
+    });
+
+});
+
 app.listen(3000, () => {
     console.log(`Listening on port 3000...`)
 });
