@@ -17,7 +17,7 @@ connection.connect(function (err) {
     console.log('Connected to the MySQL server.');
 });
 
-app.get('/api/getPart17/:partNo17', (req, res) => {
+app.get('/api/company/getPart17/:partNo17', (req, res) => {
 
     let SQL_list_one_part = 'SELECT * FROM parts17 WHERE partNo17 = ?';
     connection.query(SQL_list_one_part, [req.params.partNo17], (error, result) => {
@@ -32,7 +32,7 @@ app.get('/api/getPart17/:partNo17', (req, res) => {
 
 })
 
-app.get('/api/getPOs17/:poNo17', (req, res) => {
+app.get('/api/company/getPOs17/:poNo17', (req, res) => {
 
     let SQL_list_one_po = 'SELECT * FROM POs17 WHERE poNo17 = ?';
     connection.query(SQL_list_one_po, [req.params.poNo17], (error, result) => {
@@ -47,7 +47,7 @@ app.get('/api/getPOs17/:poNo17', (req, res) => {
 
 });
 
-app.get('/api/getPOList', (req, res) => {
+app.get('/api/company/getPOList17', (req, res) => {
 
     let SQL_list_POs = 'SELECT * FROM POs17';
     connection.query(SQL_list_POs, (error, result) => {
