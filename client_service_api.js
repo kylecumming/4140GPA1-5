@@ -47,7 +47,7 @@ app.get('/api/client/getPOs17/:poNo17', (req, res) => {
 
 });
 
-app.get('/api/client/getPOList', (req, res) => {
+app.get('/api/client/getPOList17', (req, res) => {
 
     let SQL_list_POs = 'SELECT * FROM POs17';
     connection.query(SQL_list_POs, (error, result) => {
