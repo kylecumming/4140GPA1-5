@@ -18,4 +18,4 @@ Steps to execute A2
 
 - step 5
 
-    In a web browser, or a Postman GET request, test the endpoints as listed in the assignment report, such as "http://localhost:3000/api/getPart17/1". 
+    In a web browser, or a Postman GET request, test the endpoints as listed in the assignment report, such as "http://localhost:3000/api/company/getPart17/1". 
