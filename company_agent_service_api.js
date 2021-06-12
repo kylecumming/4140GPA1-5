@@ -90,6 +90,22 @@ app.get('/api/company/getSpecificClient17/:id', (req, res) => {
 
 });
 
+app.get('/api/company/getparts17', (req, res) => {
+    
+    let SQL_list_Parts = 'SELECT * FROM parts17';
+    connection.query(SQL_list_Parts, (error, result) => {
+        if(error){
+            throw error
+        }
+        else if (result.length === 0){
+            res.status(404).send('Error: parts list is empty')
+        }
+        else{
+            res.send(result)
+        }
+    });
+});
+
 app.listen(3000, () => {
     console.log(`Listening on port 3000...`)
 });
