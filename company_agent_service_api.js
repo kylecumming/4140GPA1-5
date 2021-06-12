@@ -62,12 +62,12 @@ app.get('/api/company/getPOList17', (req, res) => {
 });
 
 app.get('/api/company/getClientList17', (req, res) => {
-    
+
     let client_info = "SELECT * FROM clientUser17";
     connection.query(client_info, (error, result) => {
-        if(error){
+        if (error) {
             throw error
-        } else if (result.length === 0){
+        } else if (result.length === 0) {
             res.status(404).send(`Error: client is empty`)
         } else {
             res.send(result)
@@ -75,14 +75,14 @@ app.get('/api/company/getClientList17', (req, res) => {
     })
 })
 
-app.get('/api/company/getSpecificClient17/:id', (req, res) => {
+app.get('/api/company/getSpecificClient17/:id17', (req, res) => {
 
-    let specific_client  = 'SELECT * FROM clientUser17 WHERE id = ?';
-    connection.query(specific_client , [req.params.id], (error, result) => {
+    let specific_client = 'SELECT * FROM clientUser17 WHERE clientCompID17 = ?';
+    connection.query(specific_client, [req.params.id17], (error, result) => {
         if (error) {
             throw error
         } else if (result.length === 0) {
-            res.status(404).send(`Error: Client with ID ${req.params.poNo17} was not found`)
+            res.status(404).send(`Error: Client with ID ${req.params.id17} was not found`)
         } else {
             res.send(result[0])
         }
@@ -90,17 +90,17 @@ app.get('/api/company/getSpecificClient17/:id', (req, res) => {
 
 });
 
-app.get('/api/company/getparts17', (req, res) => {
-    
+app.get('/api/company/getPartsList17', (req, res) => {
+
     let SQL_list_Parts = 'SELECT * FROM parts17';
     connection.query(SQL_list_Parts, (error, result) => {
-        if(error){
+        if (error) {
             throw error
         }
-        else if (result.length === 0){
+        else if (result.length === 0) {
             res.status(404).send('Error: parts list is empty')
         }
-        else{
+        else {
             res.send(result)
         }
     });
