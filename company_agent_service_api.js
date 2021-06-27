@@ -1,6 +1,9 @@
 let express = require("express");
 let mysql = require('mysql');
+let Joi = require("joi");
 let app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 let connection = mysql.createConnection({
     host: 'db.cs.dal.ca',
@@ -104,6 +107,55 @@ app.get('/api/company/getPartsList17', (req, res) => {
             res.send(result)
         }
     });
+});
+
+app.put('/api/company/updatePO17', (req, res) => {
+    // Validate request parameters
+    const schema = Joi.object({
+        poNo17: Joi.number().integer().required(),
+        status17: Joi.string().valid("Pending", "Cancelled", "Complete", "In Progress")
+    });
+    const { error } = schema.validate(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
+    // Check if PO with poNo17 exists 
+    const sqlSelect = `SELECT * FROM POs17 WHERE poNo17='${req.body.poNo17}';`;
+
+    const data = {
+        poNo17: req.body.poNo17,
+        status17: req.body.status17
+    };
+
+    connection.query(sqlSelect, function (err, result) {
+        // If PO exists
+        if (result.length !== 0) {
+            if (data.status17 != undefined) {
+                const sql = `call updatePO(${data.poNo17}, "${data.status17}");`;
+                connection.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    if (data.status17 == "Cancelled") {
+                        res.send(
+                            `The PO with poNo ${data.poNo17} was Cancelled and a refund has been provided`
+                        );
+                    } else {
+                        res.send(
+                            `The PO with poNo ${data.poNo17} is now ${data.status17}`
+                        );
+                    }
+                });
+            }
+        } else {
+            res
+                .status(400)
+                .send(
+                    `The PO with poNo ${req.body.poNo17} was not found`
+                );
+        }
+    });
+
 });
 
 app.listen(3000, () => {
