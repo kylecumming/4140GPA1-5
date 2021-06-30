@@ -158,6 +158,74 @@ app.put('/api/company/updatePO17', (req, res) => {
 
 });
 
+app.put('/api/company/updateparts17', (req, res) => {
+
+    const schema = Joi.object({
+        partNo17: Joi.number().integer().required(),
+        currentPrice17: Joi.number().required(),
+        qty17: Joi.number().integer().required()
+    });
+
+    const { error } = schema.validate(req.body);
+    if(error){
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
+    const sqlSelect = `SELECT * FROM parts17 WHERE partNo17='${req.body.partNo17}';`;
+
+    const data = {
+        partNo17: req.body.partNo17,
+        currentPrice17: req.body.currentPrice17,
+        qty17: req.body.qty17
+    };
+
+    connection.query(sqlSelect, function (err, result){
+        if(result.length !== 0){
+            if(data.currentPrice17 != undefined && data.qty17 != undefined){
+                const sql = `call updateparts17(${data.partNo17}, ${data.currentPrice17}, ${data.qty17});`;
+                res.send(
+                    `The part with partNo17 ${data.partNo17} has been updated`
+                )
+            }
+        }
+
+    });
+});
+
+app.put('/api/company/updateclientuser17', (req, res) => {
+
+    const schema = Joi.object({
+        clientCompId17: Joi.number().integer().required(),
+        moneyOwed17: Joi.number().required()
+    });
+
+    const { error } = schema.validate(req.body);
+    if(error){
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
+    const sqlSelect = `SELECT * FROM clientuser17 WHERE clientCompId17='${req.body.clientCompId17}';`;
+
+    const data = {
+        clientCompId17: req.body.clientCompId17,
+        moneyOwed17: req.body.moneyOwed17
+    };
+
+    connection.query(sqlSelect, function (err, result){
+        if(result.length !== 0){
+            if(data.clientCompId17 != undefined && data.moneyOwed17 != undefined){
+                const sql = `call updateclientuser17(${data.clientCompId17}, ${data.moneyOwed17});`;
+                res.send(
+                    `The client with clientCompId17 ${data.clientCompId17} has been updated`
+                )
+            }
+        }
+
+    });
+});
+
 app.listen(3000, () => {
     console.log(`Listening on port 3000...`)
 });
