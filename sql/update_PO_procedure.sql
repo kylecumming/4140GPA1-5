@@ -1,6 +1,6 @@
 
 DELIMITER //
-CREATE PROCEDURE updatePO(IN selectedPONo17 int(11), new_status17 varchar(45))
+CREATE PROCEDURE updatePO17(IN selectedPONo17 int(11), new_status17 varchar(45))
 BEGIN
 	DECLARE TotalPOPrice INT;
 	DECLARE clientCompId INT;
