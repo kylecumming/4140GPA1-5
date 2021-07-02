@@ -1,12 +1,23 @@
 let express = require("express");
+const { number } = require("joi");
+const Joi = require("joi");
 let mysql = require('mysql');
 let app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// let connection = mysql.createConnection({
+//     host: 'db.cs.dal.ca',
+//     user: 'eeddy',
+//     password: 'B00767017',
+//     database: 'eeddy'
+// });
 
 let connection = mysql.createConnection({
     host: 'db.cs.dal.ca',
-    user: 'eeddy',
-    password: 'B00767017',
-    database: 'eeddy'
+    user: 'kariya',
+    password: 'K@r1taku27',
+    database: 'kariya'
 });
 
 connection.connect(function(err) {
@@ -61,20 +72,72 @@ app.get('/api/client/getPOList17', (req, res) => {
     });
 });
 
-app.post('/api/client/postNewOrder17:companyID', (req, res) => {
+app.post('/api/client/postNewOrder17', (req, res) => {
+   
+    console.log("CCID:" + req.body.clientCompId17);
+    console.log("pNo:" + req.body.partNo17);
+    console.log("qty:" + req.body.qty17);
 
-    // Validate request parameters
-    const schema = Joi.object({
-        poNo17: Joi.number().integer().required(),
+    // // Validate request parameters
+    // const schema = Joi.object({
+    //     clientCompId17: Joi.number().integer().required(),
+    //     partNo17: Joi.number().integer().required(),
+    //     qty17:Joi.number().integer().required()
+    // });
+    // const { error } = schema.validate(req.body);
+    // if (error) {
+    //     res.status(400).send(error.details[0].message);
+    //     return;
+    // }
+
+    // Check if client with clientCompId17 and clientCompPassword17 exists 
+    const sqlSelect = `SELECT * FROM clientUser17 WHERE clientCompId17 = '${req.body.clientCompId17}' AND clientCompPassword17 = '${req.body.clientCompPassword17}';`;
+
+    const data = {
+        clientCompId17 : req.body.clientCompId17,
+        partNo17 : req.body.partNo17,
+        qty17 : req.body.qty17
+    };
+
+    connection.query(sqlSelect, function (err, result) {
+        // If PO exists
+        if (result.length !== 0) {
+
+                var @poNo;
+                const sqlQtytest = `SELECT * FROM parts17 WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
+
+                connection.query(sqlQtytest, function (err, result){
+                    // If there are more qty than POline
+                    if(result.length !== 0) {
+                        const sql = `call createSinglePO(${@poNo}, ${data.clientCompId17}, ${data.partNo17}, ${data.qty17});`;
+                        connection.query(sql, function (err, result, fields) {
+                            if (err) throw err;
+                            res.send(
+                                `The PO with poNo ${@poNo} is created`
+                            );
+                        });
+                    
+                    }else{
+                        res
+                            .status(400)
+                            .send(
+                                "There are not enough parts"
+                            );
+                    }
+
+                })
+                
+
+        } else {
+            res
+                .status(400)
+                .send(
+                    `userID or password is wrong`
+                );
+        }
     });
-    const { error } = schema.validate(req.body);
-    if (error) {
-        res.status(400).send(error.details[0].message);
-        return;
-    }
 
-    let SQL_new_PO = ''
-})
+});
 
 
 app.listen(3000, () => {
