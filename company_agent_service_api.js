@@ -133,7 +133,7 @@ app.put('/api/company/updatePO17', (req, res) => {
         // If PO exists
         if (result.length !== 0) {
             if (data.status17 != undefined) {
-                const sql = `call updatePO(${data.poNo17}, "${data.status17}");`;
+                const sql = `call updatePO17(${data.poNo17}, "${data.status17}");`;
                 connection.query(sql, function (err, result, fields) {
                     if (err) throw err;
                     if (data.status17 == "Cancelled") {
@@ -167,7 +167,7 @@ app.put('/api/company/updateparts17', (req, res) => {
     });
 
     const { error } = schema.validate(req.body);
-    if(error){
+    if (error) {
         res.status(400).send(error.details[0].message);
         return;
     }
@@ -180,9 +180,9 @@ app.put('/api/company/updateparts17', (req, res) => {
         qty17: req.body.qty17
     };
 
-    connection.query(sqlSelect, function (err, result){
-        if(result.length !== 0){
-            if(data.currentPrice17 != undefined && data.qty17 != undefined){
+    connection.query(sqlSelect, function (err, result) {
+        if (result.length !== 0) {
+            if (data.currentPrice17 != undefined && data.qty17 != undefined) {
                 const sql = `call updateparts17(${data.partNo17}, ${data.currentPrice17}, ${data.qty17});`;
                 res.send(
                     `The part with partNo17 ${data.partNo17} has been updated`
@@ -201,7 +201,7 @@ app.put('/api/company/updateclientuser17', (req, res) => {
     });
 
     const { error } = schema.validate(req.body);
-    if(error){
+    if (error) {
         res.status(400).send(error.details[0].message);
         return;
     }
@@ -213,9 +213,9 @@ app.put('/api/company/updateclientuser17', (req, res) => {
         moneyOwed17: req.body.moneyOwed17
     };
 
-    connection.query(sqlSelect, function (err, result){
-        if(result.length !== 0){
-            if(data.clientCompId17 != undefined && data.moneyOwed17 != undefined){
+    connection.query(sqlSelect, function (err, result) {
+        if (result.length !== 0) {
+            if (data.clientCompId17 != undefined && data.moneyOwed17 != undefined) {
                 const sql = `call updateclientuser17(${data.clientCompId17}, ${data.moneyOwed17});`;
                 res.send(
                     `The client with clientCompId17 ${data.clientCompId17} has been updated`
