@@ -9,7 +9,7 @@ let connection = mysql.createConnection({
     database: 'eeddy'
 });
 
-connection.connect(function (err) {
+connection.connect(function(err) {
     if (err) {
         return console.error('error: ', err.message);
     }
@@ -61,6 +61,20 @@ app.get('/api/client/getPOList17', (req, res) => {
     });
 });
 
+app.post('/api/client/postNewOrder17:companyID', (req, res) => {
+
+    // Validate request parameters
+    const schema = Joi.object({
+        poNo17: Joi.number().integer().required(),
+    });
+    const { error } = schema.validate(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
+    let SQL_new_PO = ''
+})
 
 
 app.listen(3000, () => {
