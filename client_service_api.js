@@ -13,12 +13,14 @@ app.use(express.urlencoded({ extended: true }));
 //     database: 'eeddy'
 // });
 
-let connection = mysql.createConnection({
+let connection = mysql.createConnection(
+    {
     host: 'db.cs.dal.ca',
     user: 'kariya',
     password: 'K@r1taku27',
     database: 'kariya'
 });
+
 
 connection.connect(function(err) {
     if (err) {
@@ -77,19 +79,7 @@ app.post('/api/client/postNewOrder17', (req, res) => {
     console.log("CCID:" + req.body.clientCompId17);
     console.log("pNo:" + req.body.partNo17);
     console.log("qty:" + req.body.qty17);
-
-    // // Validate request parameters
-    // const schema = Joi.object({
-    //     clientCompId17: Joi.number().integer().required(),
-    //     partNo17: Joi.number().integer().required(),
-    //     qty17:Joi.number().integer().required()
-    // });
-    // const { error } = schema.validate(req.body);
-    // if (error) {
-    //     res.status(400).send(error.details[0].message);
-    //     return;
-    // }
-
+    
     // Check if client with clientCompId17 and clientCompPassword17 exists 
     const sqlSelect = `SELECT * FROM clientUser17 WHERE clientCompId17 = '${req.body.clientCompId17}' AND clientCompPassword17 = '${req.body.clientCompPassword17}';`;
 
@@ -102,18 +92,18 @@ app.post('/api/client/postNewOrder17', (req, res) => {
     connection.query(sqlSelect, function (err, result) {
         // If PO exists
         if (result.length !== 0) {
-
-                var @poNo;
+                console.log("login success");
                 const sqlQtytest = `SELECT * FROM parts17 WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
 
                 connection.query(sqlQtytest, function (err, result){
                     // If there are more qty than POline
                     if(result.length !== 0) {
-                        const sql = `call createSinglePO(${@poNo}, ${data.clientCompId17}, ${data.partNo17}, ${data.qty17});`;
-                        connection.query(sql, function (err, result, fields) {
+                        connection.query("CALL createSinglePO("+ data.clientCompId17 +", "+ data.partNo17 +", "+ data.qty17 +", @poNo);", (err, result) => {});
+                        connection.query("SELECT @poNo;", (err, result) => {
                             if (err) throw err;
+                            console.log(Object.values(result[0]));
                             res.send(
-                                `The PO with poNo ${@poNo} is created`
+                                `The PO with poNo:${Object.values(result[0])} is created`
                             );
                         });
                     
@@ -132,7 +122,7 @@ app.post('/api/client/postNewOrder17', (req, res) => {
             res
                 .status(400)
                 .send(
-                    `userID or password is wrong`
+                    `Login failed: userID or password is wrong`
                 );
         }
     });

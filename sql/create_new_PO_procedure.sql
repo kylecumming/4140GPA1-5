@@ -1,17 +1,17 @@
 DELIMITER //
 
-CREATE OR REPLACE PROCEDURE createSinglePO (OUT poNo int(11), IN createPOClientCompId17 int(11), selectedpartNo17 int(11), selectedQty17 int(11))
+CREATE OR REPLACE PROCEDURE createSinglePO (IN createPOClientCompId17 int(11), selectedpartNo17 int(11), selectedQty17 int(11), OUT poNo int(11))
 BEGIN
-    DECLARE itemPrice INT;
-    DECLARE totalPrice INT;
+    DECLARE itemPrice float;
+    DECLARE totalPrice float;
 
-    INSERT INTO POs17 VALUES(NULL ,clientCompId17, NULL, NULL);
+   INSERT INTO `POs17` (`clientCompId17`, `datePO17`) VALUES ( createPOClientCompId17, CURRENT_DATE());
 
-    SET poNo = last_insert_id();
+    SELECT last_insert_id() INTO poNo;
     SELECT currentPrice17 INTO itemPrice FROM parts17 WHERE partNo17 = selectedpartNo17;
     SELECT itemPrice * selectedQty17 INTO totalPrice;
 
-    INSERT INTO POLines17 VALUES(NULL, poNo, partNo17, totalPrice, selectedQty17);
+	INSERT INTO `POLines17` (`poNo17`, `partNo17`, `linePrice17`, `qty17`) VALUES (poNo, selectedpartNo17, totalPrice, selectedQty17);
 
     UPDATE clientUser17
     SET moneyOwed17 = moneyOWed17 - totalPrice
