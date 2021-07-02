@@ -21,7 +21,7 @@ USE `eeddy` ;
 -- Table `eeddy`.`parts17`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eeddy`.`parts17` (
-  `partNo17` INT(11) NOT NULL,
+  `partNo17` INT(11) NOT NULL AUTO_INCREMENT,
   `partName17` VARCHAR(45) NOT NULL,
   `partDescription17` VARCHAR(45) NOT NULL,
   `currentPrice17` FLOAT NOT NULL,
@@ -35,7 +35,7 @@ DEFAULT CHARACTER SET = latin1;
 -- Table `eeddy`.`clientUser17`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eeddy`.`clientUser17` (
-  `clientCompId17` INT(11) NOT NULL,
+  `clientCompId17` INT(11) NOT NULL AUTO_INCREMENT,
   `clientCompName17` VARCHAR(45) NOT NULL,
   `clientCity17` VARCHAR(45) NOT NULL,
   `clientCompPassword17` VARCHAR(45) NOT NULL,
@@ -49,10 +49,10 @@ DEFAULT CHARACTER SET = latin1;
 -- Table `eeddy`.`POs17`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eeddy`.`POs17` (
-  `poNo17` INT(11) NOT NULL,
+  `poNo17` INT(11) NOT NULL AUTO_INCREMENT,
   `clientCompId17` INT(11) NOT NULL,
-  `datePO17` DATE NOT NULL,
-  `status17` VARCHAR(45) NOT NULL,
+  `datePO17` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `status17` VARCHAR(45) NOT NULL DEFAULT 'Pending',
   PRIMARY KEY (`poNo17`),
   INDEX `clientCompId17` (`clientCompId17` ASC),
   CONSTRAINT `clientCompId17`
@@ -68,7 +68,7 @@ DEFAULT CHARACTER SET = latin1;
 -- Table `eeddy`.`POLines17`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `eeddy`.`POLines17` (
-  `lineNo17` INT(11) NOT NULL,
+  `lineNo17` INT(11) NOT NULL AUTO_INCREMENT,
   `poNo17` INT(11) NOT NULL,
   `partNo17` INT(11) NOT NULL,
   `linePrice17` FLOAT NOT NULL,
