@@ -61,6 +61,57 @@ app.get('/api/client/getPOList17', (req, res) => {
     });
 });
 
+app.put('/api/company/cancelProgressingPO17', (req, res) => {
+	//Validate request parameters
+	const schema = Joi.object({
+		poNo17: Joi.number().interger().required(),
+		status17: Joi.string().valid("Pending", "Cancelled", "Complete", "In Progress")
+	});
+    	const { error } = schema.validate(req.body);
+    	if (error) {
+    	    res.status(400).send(error.details[0].message);
+     	    return;
+    	}
+	
+	// Check if PO with poNo17 exists 
+    	const sqlSelect = `SELECT * FROM POs17 WHERE poNo17='${req.body.poNo17}';`;
+
+    	const data = {
+        	poNo17: req.body.poNo17,
+        	status17: req.body.status17
+    	};
+
+	connection.query(sqlSelect, function (err, results) {
+		//if PO exists
+		if(result.length !== 0) {
+			if (data.status17 != undefined) {
+				connection.query(sql, function (err, result, fields) {
+				if (err) throw err;
+				if (data.status17 == "Pending"){
+					res.send(
+						`The PO with poNo ${data.poNo17} was Cancelled and a refund has been provided`
+						);
+				} else {
+					res.send(
+						`The PO with poNo ${data.poNo17} was Cancelled, and a cancellation fee has been added to your account`
+						);
+				const sql = `call updatePO(${data.poNo17}, "${data.status17}");`;
+				}
+			});
+		} else {
+		res
+                .status(400)
+                .send(
+                    `The PO with poNo ${req.body.poNo17} was not found`
+                );
+        }
+    }
+
+});
+});
+
+
+
 
 
 app.listen(3000, () => {
