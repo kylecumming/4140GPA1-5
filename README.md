@@ -1,4 +1,4 @@
-Steps to execute A2
+Steps to execute A3
 
 - step 1
     
@@ -6,7 +6,7 @@ Steps to execute A2
     
 - step 2
     
-   Switch to the assignment 2 branch, using `git checkout A2`.
+   Switch to the assignment 3 branch, using `git checkout A3`.
     
 - step 3 
     
@@ -18,4 +18,4 @@ Steps to execute A2
 
 - step 5
 
-    In a web browser, or a Postman GET request, test the endpoints as listed in the assignment report, such as "http://localhost:3000/api/company/getPart17/1". 
+    Using Postman, create a PUT request and input the body parameters under x-www-form-urlencoded to test the endpoints as listed in the assignment report, such as "http://localhost:3000/api/company/updatePO17" with parameters for "poNo17" and "status17". 
