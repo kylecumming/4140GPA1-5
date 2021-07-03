@@ -1,6 +1,6 @@
 DELIMITER //
 
-CREATE OR REPLACE PROCEDURE createSinglePO (IN createPOClientCompId17 int(11), selectedpartNo17 int(11), selectedQty17 int(11), OUT poNo int(11))
+CREATE OR REPLACE PROCEDURE createSinglePO17 (IN createPOClientCompId17 int(11), selectedpartNo17 int(11), selectedQty17 int(11), OUT poNo int(11))
 BEGIN
     DECLARE itemPrice float;
     DECLARE totalPrice float;
@@ -14,7 +14,7 @@ BEGIN
 	INSERT INTO `POLines17` (`poNo17`, `partNo17`, `linePrice17`, `qty17`) VALUES (poNo, selectedpartNo17, totalPrice, selectedQty17);
 
     UPDATE clientUser17
-    SET moneyOwed17 = moneyOWed17 - totalPrice
+    SET moneyOwed17 = moneyOWed17 + totalPrice
     WHERE clientCompId17 = createPOClientCompId17;
 
     UPDATE parts17

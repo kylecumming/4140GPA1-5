@@ -8,17 +8,28 @@ BEGIN
     
     SELECT status17 into currStatus FROM POs17 WHERE poNo17=selectedPONo17;
     
-	UPDATE POs17
-	SET status17=new_status17
-    WHERE poNo17=selectedPONo17;
+	IF new_status17 != "Complete" THEN
+		UPDATE POs17
+		SET status17=new_status17
+		WHERE poNo17=selectedPONo17;
+	END IF;
     
-    IF  currStatus!= "Cancelled" AND new_status17 = "Cancelled" THEN
+    IF new_status17 = "Cancelled" THEN
+	
 		SELECT clientCompId17 into clientCompId FROM POs17 WHERE poNo17=selectedPONo17;
-        SELECT SUM(linePrice17) into TotalPOPrice FROM POLines17 WHERE poNo17=selectedPONo17;
+		SELECT SUM(linePrice17) into TotalPOPrice FROM POLines17 WHERE poNo17=selectedPONo17;
+		IF  currStatus = "Pending" THEN
+			UPDATE clientUser17
+			SET moneyOwed17=moneyOwed17 - TotalPOPrice
+			WHERE clientCompId17=clientCompId;
+		END IF;
+		IF currStatus = "In Progress" THEN
+			UPDATE clientUser17
+			SET moneyOwed17=moneyOwed17 - (TotalPOPrice * 0.5) # Cancellation Fee
+			WHERE clientCompId17=clientCompId;
+		END IF;
         
-		UPDATE clientUser17
-		SET moneyOwed17=moneyOwed17 - TotalPOPrice
-        WHERE clientCompId17=clientCompId;
+        # Do nothing if already cancelled or complete 
         
 	END IF;
 END

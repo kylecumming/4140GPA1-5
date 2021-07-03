@@ -6,23 +6,14 @@ let app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// let connection = mysql.createConnection({
-//     host: 'db.cs.dal.ca',
-//     user: 'eeddy',
-//     password: 'B00767017',
-//     database: 'eeddy'
-// });
-
-let connection = mysql.createConnection(
-    {
+let connection = mysql.createConnection({
     host: 'db.cs.dal.ca',
-    user: 'kariya',
-    password: 'K@r1taku27',
-    database: 'kariya'
+    user: 'eeddy',
+    password: 'B00767017',
+    database: 'eeddy'
 });
 
-
-connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) {
         return console.error('error: ', err.message);
     }
@@ -82,53 +73,47 @@ app.post('/api/client/postNewOrder17', (req, res) => {
         qty17: Joi.number().integer().required(),
         clientCompPassword17: Joi.string().required()
     });
-        const {error} = schema.validate(req.body);
-        if(error){
-            res.status(400).send(error.details[0].message);
-            return;
-        }
-   
-    console.log("CCID:" + req.body.clientCompId17);
-    console.log("pNo:" + req.body.partNo17);
-    console.log("qty:" + req.body.qty17);
-    
+    const { error } = schema.validate(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
+
     // Check if client with clientCompId17 and clientCompPassword17 exists 
     const sqlSelect = `SELECT * FROM clientUser17 WHERE clientCompId17 = '${req.body.clientCompId17}' AND clientCompPassword17 = '${req.body.clientCompPassword17}';`;
 
     const data = {
-        clientCompId17 : req.body.clientCompId17,
-        partNo17 : req.body.partNo17,
-        qty17 : req.body.qty17
+        clientCompId17: req.body.clientCompId17,
+        partNo17: req.body.partNo17,
+        qty17: req.body.qty17
     };
 
     connection.query(sqlSelect, function (err, result) {
         // If PO exists
         if (result.length !== 0) {
-                console.log("login success");
-                const sqlQtytest = `SELECT * FROM parts17 WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
+            const sqlQtytest = `SELECT * FROM parts17 WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
 
-                connection.query(sqlQtytest, function (err, result){
-                    // If there are more qty than POline
-                    if(result.length !== 0) {
-                        connection.query("CALL createSinglePO("+ data.clientCompId17 +", "+ data.partNo17 +", "+ data.qty17 +", @poNo);", (err, result) => {});
-                        connection.query("SELECT @poNo;", (err, result) => {
-                            if (err) throw err;
-                            console.log(Object.values(result[0]));
-                            res.send(
-                                `The PO with poNo:${Object.values(result[0])} is created`
-                            );
-                        });
-                    
-                    }else{
-                        res
-                            .status(400)
-                            .send(
-                                "There are not enough parts"
-                            );
-                    }
+            connection.query(sqlQtytest, function (err, result) {
+                // If there are more qty than POline
+                if (result.length !== 0) {
+                    connection.query("CALL createSinglePO17(" + data.clientCompId17 + ", " + data.partNo17 + ", " + data.qty17 + ", @poNo);", (err, result) => { });
+                    connection.query("SELECT @poNo;", (err, result) => {
+                        if (err) throw err;
+                        res.send(
+                            `The PO with poNo:${Object.values(result[0])} is created`
+                        );
+                    });
 
-                })
-                
+                } else {
+                    res
+                        .status(400)
+                        .send(
+                            "There are not enough parts"
+                        );
+                }
+
+            })
+
 
         } else {
             res
@@ -141,53 +126,56 @@ app.post('/api/client/postNewOrder17', (req, res) => {
 
 });
 
-app.put('/api/company/cancelProgressingPO17', (req, res) => {
-	//Validate request parameters
-	const schema = Joi.object({
-		poNo17: Joi.number().interger().required(),
-		status17: Joi.string().valid("Pending", "Cancelled", "Complete", "In Progress")
-	});
-    	const { error } = schema.validate(req.body);
-    	if (error) {
-    	    res.status(400).send(error.details[0].message);
-     	    return;
-    	}
-	
-	// Check if PO with poNo17 exists 
-    	const sqlSelect = `SELECT * FROM POs17 WHERE poNo17='${req.body.poNo17}';`;
+app.put('/api/client/cancelProgressingPO17', (req, res) => {
+    //Validate request parameters
+    const schema = Joi.object({
+        poNo17: Joi.number().integer().required()
+    });
+    const { error } = schema.validate(req.body);
+    if (error) {
+        res.status(400).send(error.details[0].message);
+        return;
+    }
 
-    	const data = {
-        	poNo17: req.body.poNo17,
-        	status17: req.body.status17
-    	};
+    // Check if PO with poNo17 exists 
+    const sqlSelect = `SELECT status17 FROM POs17 WHERE poNo17='${req.body.poNo17}';`;
 
-	connection.query(sqlSelect, function (err, results) {
-		//if PO exists
-		if(result.length !== 0) {
-			if (data.status17 != undefined) {
-				connection.query(sql, function (err, result, fields) {
-				if (err) throw err;
-				if (data.status17 == "Pending"){
-					res.send(
-						`The PO with poNo ${data.poNo17} was Cancelled and a refund has been provided`
-						);
-				} else {
-					res.send(
-						`The PO with poNo ${data.poNo17} was Cancelled, and a cancellation fee has been added to your account`
-						);
-				const sql = `call updatePO(${data.poNo17}, "${data.status17}");`;
-				}
-			});
-		} else {
-		res
+    const data = {
+        poNo17: req.body.poNo17
+    };
+
+    connection.query(sqlSelect, function (err, results) {
+        //if PO exists
+        if (results.length !== 0) {
+            status17 = results[0].status17;
+            const sql = `call updatePO17(${data.poNo17}, "Cancelled");`;
+            connection.query(sql, function (err, result, fields) {
+                if (err) throw err;
+                // If previous status was pending 
+                if (status17 == "Pending") {
+                    res.send(
+                        `The PO with poNo ${data.poNo17} was Cancelled and a full refund has been provided`
+                    );
+
+                } else if (status17 == "In Progress") { // order will only be half refunded for cancellation fee
+                    res.send(
+                        `The PO with poNo ${data.poNo17} was Cancelled, and a cancellation fee has been added to your account`
+                    );
+                } else { // Cannot cancel if already cancelled or complete
+                    res.send(
+                        `The PO with poNo ${data.poNo17} cannot be cancelled`
+                    );
+                }
+            });
+        } else {
+            res
                 .status(400)
                 .send(
                     `The PO with poNo ${req.body.poNo17} was not found`
                 );
         }
-    }
 
-});
+    });
 });
 
 

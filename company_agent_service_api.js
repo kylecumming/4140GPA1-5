@@ -184,9 +184,12 @@ app.put('/api/company/updateparts17', (req, res) => {
         if (result.length !== 0) {
             if (data.currentPrice17 != undefined && data.qty17 != undefined) {
                 const sql = `call updateparts17(${data.partNo17}, ${data.currentPrice17}, ${data.qty17});`;
-                res.send(
-                    `The part with partNo17 ${data.partNo17} has been updated`
-                )
+                connection.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    res.send(
+                        `The part with partNo17 ${data.partNo17} has been updated`
+                    )
+                });
             }
         }
 
@@ -206,7 +209,7 @@ app.put('/api/company/updateclientuser17', (req, res) => {
         return;
     }
 
-    const sqlSelect = `SELECT * FROM clientuser17 WHERE clientCompId17='${req.body.clientCompId17}';`;
+    const sqlSelect = `SELECT * FROM clientUser17 WHERE clientCompId17='${req.body.clientCompId17}';`;
 
     const data = {
         clientCompId17: req.body.clientCompId17,
@@ -216,10 +219,13 @@ app.put('/api/company/updateclientuser17', (req, res) => {
     connection.query(sqlSelect, function (err, result) {
         if (result.length !== 0) {
             if (data.clientCompId17 != undefined && data.moneyOwed17 != undefined) {
-                const sql = `call updateclientuser17(${data.clientCompId17}, ${data.moneyOwed17});`;
-                res.send(
-                    `The client with clientCompId17 ${data.clientCompId17} has been updated`
-                )
+                const sql = `call updatecustomer17(${data.clientCompId17}, ${data.moneyOwed17});`;
+                connection.query(sql, function (err, result, fields) {
+                    if (err) throw err;
+                    res.send(
+                        `The client with clientCompId17 ${data.clientCompId17} has been updated`
+                    )
+                });
             }
         }
 
