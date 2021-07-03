@@ -191,6 +191,12 @@ app.put('/api/company/updateparts17', (req, res) => {
                     )
                 });
             }
+        } else {
+            res
+                .status(400)
+                .send(
+                    `The part with partNo17 ${data.partNo17} was not found`
+                );
         }
 
     });
@@ -227,6 +233,12 @@ app.put('/api/company/updateclientuser17', (req, res) => {
                     )
                 });
             }
+        } else {
+            res
+                .status(400)
+                .send(
+                    `The client with clientCompId17 ${data.clientCompId17} was not found`
+                );
         }
 
     });
