@@ -3,8 +3,10 @@ const { number } = require("joi");
 const Joi = require("joi");
 let mysql = require('mysql');
 let app = express();
+var cors=require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 let connection = mysql.createConnection({
     host: 'db.cs.dal.ca',

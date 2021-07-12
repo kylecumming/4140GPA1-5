@@ -2,8 +2,10 @@ let express = require("express");
 let mysql = require('mysql');
 let Joi = require("joi");
 let app = express();
+var cors=require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 let connection = mysql.createConnection({
     host: 'db.cs.dal.ca',
