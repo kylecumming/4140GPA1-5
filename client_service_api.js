@@ -3,7 +3,7 @@ const { number } = require("joi");
 const Joi = require("joi");
 let mysql = require('mysql');
 let app = express();
-var cors=require("cors");
+var cors = require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -37,6 +37,20 @@ app.get('/api/client/getPartsList17', (req, res) => {
     });
 
 })
+
+app.get('/api/client/getPOList17/:clientCompId17', (req, res) => {
+
+    let SQL_list_POs = 'SELECT * FROM POs17 WHERE clientCompId17 = ?';
+    connection.query(SQL_list_POs, [req.params.clientCompId17], (error, result) => {
+        if (error) {
+            throw error
+        } else if (result.length === 0) {
+            res.status(404).send(`Error: PO list is empty`)
+        } else {
+            res.send(result)
+        }
+    });
+});
 
 app.get('/api/client/getPOs17/:poNo17', (req, res) => {
 
