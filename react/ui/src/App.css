@@ -36,3 +36,26 @@
     transform: rotate(360deg);
   }
 }
+
+
+#POsList {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#POsList td, #POsList th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#POsList tr:nth-child(even){background-color: #f2f2f2;}
+
+#POsList tr:hover {background-color: #ddd;}
+
+#POsList th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #04AA6D;
+  color: white;
+}

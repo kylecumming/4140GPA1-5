@@ -27,7 +27,7 @@ export default class HomePOsList extends Component {
     }
 
     getPODetails17(PO) {
-        console.log(PO);
+        window.location.href = `/PODetails?id=${PO.poNo17}`
     }
 
     render() {
@@ -36,13 +36,13 @@ export default class HomePOsList extends Component {
                 <Navbar />
                 <div>
                     <div style={{
-                        'margin-left': '10px',
-                        'margin-right': '10px'
+                        'marginLeft': '10px',
+                        'marginRight': '10px'
                     }}>
                         <table id="POsList">
                             <thead>
                                 <tr>
-                                    <th>PO ID</th>
+                                    <th>PO No</th>
                                     <th>Date</th>
                                     <th>Status</th>
                                 </tr>

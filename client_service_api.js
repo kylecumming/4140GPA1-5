@@ -52,6 +52,21 @@ app.get('/api/client/getPOList17/:clientCompId17', (req, res) => {
     });
 });
 
+
+app.get('/api/client/getPOs17/:poNo17/:clientCompId17', (req, res) => {
+    let SQL_list_one_po = 'SELECT * FROM POs17 WHERE poNo17 = ? AND clientCompId17 = ?';
+    connection.query(SQL_list_one_po, [req.params.poNo17, req.params.clientCompId17], (error, result) => {
+        if (error) {
+            throw error
+        } else if (result.length === 0) {
+            res.status(404).send(`Error: PO with ID ${req.params.poNo17} was not found`)
+        } else {
+            res.send(result[0])
+        }
+    });
+
+});
+
 app.get('/api/client/getPOs17/:poNo17', (req, res) => {
 
     let SQL_list_one_po = 'SELECT * FROM POs17 WHERE poNo17 = ?';
@@ -66,6 +81,24 @@ app.get('/api/client/getPOs17/:poNo17', (req, res) => {
     });
 
 });
+
+
+app.get('/api/client/getPOLines17/:poNo17', (req, res) => {
+
+    let SQL_list_po_lines = 'SELECT * FROM POLines17 WHERE poNo17 = ?';
+    connection.query(SQL_list_po_lines, [req.params.poNo17], (error, result) => {
+        if (error) {
+            throw error
+        } else if (result.length === 0) {
+            res.status(404).send(`Error: PO with ID ${req.params.poNo17} was not found`)
+        } else {
+            res.send(result)
+        }
+    });
+
+});
+
+
 
 app.get('/api/client/getPOList17', (req, res) => {
 
