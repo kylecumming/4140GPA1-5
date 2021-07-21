@@ -1,0 +1,22 @@
+-- DELIMITER //
+
+-- CREATE
+--     TRIGGER updateMoneyOwed371
+--     AFTER UPDATE
+--     ON orders
+--     FOR EACH ROW
+--     BEGIN
+--       INSERT INTO
+--            aggregate_table (customer_id, total_amount)
+--        (SELECT customer_id, SUM(total)
+--             FROM orders
+--             GROUP BY customer_id)
+--        ON DUPLICATE KEY UPDATE
+--             customer_id = NEW.customer_id
+--             ,total_amount = (SELECT SUM(total)
+--                                 FROM orders
+--                                 WHERE customer_id = NEW.customer_id
+--                                 GROUP BY customer_id);
+--     END //
+
+-- DELIMITER ;
