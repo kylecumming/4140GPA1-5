@@ -131,18 +131,18 @@ app.get('/api/company/getPOLines371/:poNo371', (req, res) => {
     });
 });
 
-app.get('/api/company/checkFulfill371/:poNo371', (req, res) => {
-    let check_fulfill = 'SELECT checkFulfill (?)';
-    connection.query(check_fulfill, [req.params.poNo371], (error, result) => {
-        if(error) {
-            throw error
-        } else if (result.length === 0) {
-            res.status(404).send(`Error: POLine for poNo ${req.params.poNo371} was not found`)
-        } else {
-            res.send(Object.values(result[0])[0]);
-        }
-    });
-});
+// app.get('/api/company/checkFulfill371/:poNo371', (req, res) => {
+//     let check_fulfill = 'SELECT checkFulfill (?)';
+//     connection.query(check_fulfill, [req.params.poNo371], (error, result) => {
+//         if(error) {
+//             throw error
+//         } else if (result.length === 0) {
+//             res.status(404).send(`Error: POLine for poNo ${req.params.poNo371} was not found`)
+//         } else {
+//             res.send(Object.values(result[0])[0]);
+//         }
+//     });
+// });
 
 app.get('/api/company/startTransaction371/:poNo371', (req, res) => {
 
