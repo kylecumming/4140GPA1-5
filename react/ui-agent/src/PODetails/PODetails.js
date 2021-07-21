@@ -10,8 +10,12 @@ export default class PODetails extends Component {
         this.state = {
             poNo: 0,
             po: [],
-            poLines: []
+            poLines: [],
+            transaction: [] 
         };
+
+        this.commitTransaction = this.commitTransaction.bind(this);
+        this.rollbackTransaction = this.rollbackTransaction.bind(this);
     }
 
     getPOInfomation17() {
@@ -28,12 +32,39 @@ export default class PODetails extends Component {
         });
     }
 
+    startTransaction371() {
+        Axios.get(`http://localhost:3000/api/company/startTransaction371/${this.state.poNo}`).then((response) => {
+            this.setState({ transaction: response.data});
+        }).catch((err) => {
+            alert(err);
+        });
+    }
+
     componentDidMount() {
         const search = this.props.location.search; // returns the URL query String
         const params = new URLSearchParams(search);
         this.setState({
             poNo: params.get('id'),
         }, () => { this.getPOInfomation17() });
+        if(this.state.po.status17 === 'Pending'){
+            this.setState({}, () => { this.startTransaction371()});
+        }
+    }
+
+    commitTransaction() {
+        Axios.get('http://localhost:3000/api/company/endTransaction371/commit').then((res) => {
+            alert(res);
+        }).catch((err) => {
+            alert(err);
+        })
+    }
+
+    rollbackTransaction() {
+        Axios.get('http://localhost:3000/api/company/endTransaction371/rollback').then((res) => {
+            alert(res);
+        }).catch((err) => {
+            alert(err);
+        })
     }
 
 
@@ -80,7 +111,14 @@ export default class PODetails extends Component {
                         </tbody>
                     </table>
                 </div >
+                {this.state.transaction === 'checking' &&
+                    <div style={{ margin: '10px' }}>
+                        <button onClick={() => this.commitTransaction()}>Commit</button>
+                        <button onClick={() => this.rollbackTransaction()}>Cancel</button>
+                    </div>
+                }
             </div >
         );
+
     }
 }
