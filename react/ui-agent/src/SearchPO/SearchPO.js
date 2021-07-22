@@ -11,7 +11,6 @@ export default class SearchPO extends Component {
             searchPONo: '',
             PO: {},
             poFound: null,
-            companyId: 1 // defaulted for now - will need to be current company 
         };
 
         this.submit = this.submit.bind(this);
@@ -20,7 +19,7 @@ export default class SearchPO extends Component {
     submit(event) {
         event.preventDefault();
 
-        Axios.get(`http://localhost:3000/api/client/getPOs17/${this.state.searchPONo}/${this.state.companyId}`).then((response) => {
+        Axios.get(`http://localhost:3000/api/company/getPOs17/${this.state.searchPONo}`).then((response) => {
             this.setState({
                 PO: response.data,
                 poFound: true,
@@ -52,7 +51,7 @@ export default class SearchPO extends Component {
                         />
                         <button type="submit" className="search-button" >Search</button>
                     </form>
-                    {this.state.poFound === false && <h5 style={{ color: 'red' }}> Error the PO was not found </h5>}
+                    {this.state.poFound === false && <h5 className='errorMsg'> Error the PO was not found </h5>}
                 </div >
             </div>
         );
