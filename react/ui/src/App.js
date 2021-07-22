@@ -41,7 +41,7 @@ import HomePOsList from './HomePOsList/HomePOsList'
 import Login from './Login/Login'
 import SearchPO from './SearchPO/SearchPO'
 import PODetails from './PODetails/PODetails'
-// import CreatePO from './CreatePO/CreatePO'
+import CreatePO from './CreatePO/CreatePO'
 
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
           <Route exact path='/home' component={HomePOsList} />
           <Route exact path='/searchPO' component={SearchPO} />
           <Route exact path='/PODetails' component={PODetails} />
-          {/* <Route exact path='/createPO' component={CreatePO} /> */}
+          <Route exact path='/createPO' component={CreatePO} />
         </Switch>
       </Router>
     </div>
