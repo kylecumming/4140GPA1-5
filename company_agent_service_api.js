@@ -155,7 +155,7 @@ app.get('/api/company/startTransaction371/:poNo371', (req, res) => {
 
         let getstatus371 = 'SELECT status17 FROM POs17 WHERE poNo17 = ?'
         connection.query(getstatus371, [req.params.poNo371], (err, result) => {
-            if(result[0].status17 == 'Pending') {
+            if(result[0].status17 == 'Placed') {
                 res.send('checking');
                 let check_fulfill371 = 'SELECT checkFulfill (?)';
                 transaction.query(check_fulfill371, [req.params.poNo371], (err, result) => {
@@ -178,10 +178,6 @@ app.get('/api/company/startTransaction371/:poNo371', (req, res) => {
                                     }            
                                     console.log('Commit: success !');
                                     res1.send('Commit: success !');
-                                });
-                                let change_status_placed = 'UPDATE POs17 SET status17 = "Placed" WHERE poNo17 = ?';
-                                connection.query(change_status_placed, req.params.poNo371,(err, res2) => {
-                                    console.log("Status has been updated to Placed");
                                 });
                             } else {
                                 transaction.rollback(function(){
