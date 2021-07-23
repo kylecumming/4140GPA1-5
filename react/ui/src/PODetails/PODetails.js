@@ -29,10 +29,8 @@ export default class PODetails extends Component {
     }
 
     componentDidMount() {
-        const search = this.props.location.search; // returns the URL query String
-        const params = new URLSearchParams(search);
         this.setState({
-            poNo: params.get('id'),
+            poNo: this.props.location.state.poNo,
         }, () => { this.getPOInfomation17() });
     }
 
@@ -55,7 +53,7 @@ export default class PODetails extends Component {
                     'marginLeft': '10px',
                     'marginRight': '10px'
                 }}>
-                    <table id="list">
+                    <table className="list">
                         <thead>
                             <tr>
                                 <th>Line No</th>

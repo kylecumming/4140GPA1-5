@@ -6,6 +6,7 @@ import SearchPO from './SearchPO/SearchPO'
 import PODetails from './PODetails/PODetails'
 import PartsList from './PartsList/PartsList'
 import ClientsList from './ClientsList/ClientsList'
+import PartDetails from './PartsDetails/PartDetails'
 
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route exact path='/PODetails' component={PODetails} />
           <Route exact path='/partsList' component={PartsList} />
           <Route exact path='/clientsList' component={ClientsList} />
+          <Route exact path='/partDetails' component={PartDetails} />
         </Switch>
       </Router>
     </div>

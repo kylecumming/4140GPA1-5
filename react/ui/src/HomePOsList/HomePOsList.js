@@ -8,7 +8,7 @@ export default class HomePOsList extends Component {
     constructor() {
         super();
         this.state = {
-            orders: [], clientId: 1
+            orders: [], clientId: 1 // needs a value from login
         };
         this.getPOsList17 = this.getPOsList17.bind(this);
     }
@@ -26,7 +26,7 @@ export default class HomePOsList extends Component {
     }
 
     getPODetails17(PO) {
-        window.location.href = `/PODetails?id=${PO.poNo17}`
+        this.props.history.push({ pathname: '/PODetails', state: { poNo: PO.poNo17 } });
     }
 
     render() {

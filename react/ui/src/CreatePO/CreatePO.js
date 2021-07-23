@@ -29,7 +29,7 @@ export default class CreatePO extends Component {
 
         }).then((response) => {
             if (response.status === 200) {
-                window.location.href = "/home";
+                this.props.history.push({ pathname: '/home' });
             } else {
                 console.log(response.status)
             }

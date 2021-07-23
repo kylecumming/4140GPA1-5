@@ -55,10 +55,8 @@ export default class PODetails extends Component {
     }
 
     componentDidMount() {
-        const search = this.props.location.search; // returns the URL query String
-        const params = new URLSearchParams(search);
         this.setState({
-            poNo: params.get('id'),
+            poNo: this.props.location.state.poNo,
         }, () => { this.getPOInfomation17() })
     }
 
@@ -107,7 +105,7 @@ export default class PODetails extends Component {
                     'marginLeft': '10px',
                     'marginRight': '10px'
                 }}>
-                    <table id="list">
+                    <table className="list">
                         <thead>
                             <tr>
                                 <th>Line No</th>
@@ -135,6 +133,9 @@ export default class PODetails extends Component {
                 <div style={{ margin: '10px' }}>
                     {this.state.transaction === 'able_to_fill' &&
                         <button onClick={() => this.startTransaction371()}>Fill order</button>
+                    }
+                    {this.state.transaction === 'unfillable' &&
+                        <h5 className='errorMsg'>This PO is unfillable</h5>
                     }
                     {this.state.transaction === 'checking' &&
                         <div>
