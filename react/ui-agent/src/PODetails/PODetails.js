@@ -10,30 +10,78 @@ export default class PODetails extends Component {
         this.state = {
             poNo: 0,
             po: [],
-            poLines: []
+            poLines: [],
+            transaction: null
         };
+
+        this.commitTransaction = this.commitTransaction.bind(this);
+        this.rollbackTransaction = this.rollbackTransaction.bind(this);
     }
 
     getPOInfomation17() {
-        Axios.get(`http://localhost:3000/api/company/getPODetail371/${this.state.poNo}`).then((response) => {
-            this.setState({ po: response.data });
-        }).catch((err) => {
-            alert(err);
-        });
+        let POdetails = `http://localhost:3000/api/company/getPODetail371/${this.state.poNo}`;
+        let POLines = `http://localhost:3000/api/company/getPOLines371/${this.state.poNo}`;
+        const detailsRequest = Axios.get(POdetails)
+        const linesRequest = Axios.get(POLines)
 
-        Axios.get(`http://localhost:3000/api/company/getPOLines371/${this.state.poNo}`).then((response) => {
-            this.setState({ poLines: response.data });
+        Axios.all([detailsRequest, linesRequest]).then(Axios.spread((...responses) => {
+            const detailsResponse = responses[0].data
+            const linesResponseTwo = responses[1].data
+            this.setState({
+                po: detailsResponse,
+                poLines: linesResponseTwo
+            });
+
+            if (this.state.po.status17 === 'Pending') {
+                this.setState({
+                    transaction: 'able_to_fill'
+                });
+            }
+        })).catch(err => {
+            alert(err);
+        })
+
+
+
+    }
+
+    startTransaction371() {
+        console.log("transaction started")
+        Axios.get(`http://localhost:3000/api/company/startTransaction371/${this.state.poNo}`).then((response) => {
+            this.setState({ transaction: response.data });
         }).catch((err) => {
             alert(err);
         });
     }
 
     componentDidMount() {
-        const search = this.props.location.search; // returns the URL query String
-        const params = new URLSearchParams(search);
         this.setState({
-            poNo: params.get('id'),
-        }, () => { this.getPOInfomation17() });
+            poNo: this.props.location.state.poNo,
+        }, () => { this.getPOInfomation17() })
+    }
+
+    commitTransaction() {
+        Axios.get('http://localhost:3000/api/company/endTransaction371/commit').then((res) => {
+            this.setState({
+                transaction: 'commit_success'
+            });
+        }).catch((err) => {
+            this.setState({
+                transaction: 'rollback_success',
+            })
+        })
+    }
+
+    rollbackTransaction() {
+        Axios.get('http://localhost:3000/api/company/endTransaction371/rollback').then((res) => {
+            this.setState({
+                transaction: 'rollback_success',
+            })
+        }).catch((err) => {
+            this.setState({
+                transaction: 'rollback_failed',
+            })
+        })
     }
 
 
@@ -46,6 +94,8 @@ export default class PODetails extends Component {
                     <h3 >Part Order number {this.state.poNo} details:</h3>
                     <div> Status: {this.state.po.status17} </div>
                     <div> Date: {this.state.po.datePO17} </div>
+                    <div> Client ID: {this.state.po.clientCompId17} </div>
+                    <div> Client Location: {this.state.po.clientCity17} </div>
                     <div> Total Cost: {this.state.poLines.reduce(
                         (a, b) => a + b.linePrice17, 0)} </div>
                     <div> Number of parts: {this.state.poLines.reduce(
@@ -55,7 +105,7 @@ export default class PODetails extends Component {
                     'marginLeft': '10px',
                     'marginRight': '10px'
                 }}>
-                    <table id="list">
+                    <table className="list">
                         <thead>
                             <tr>
                                 <th>Line No</th>
@@ -80,7 +130,34 @@ export default class PODetails extends Component {
                         </tbody>
                     </table>
                 </div >
+                <div style={{ margin: '10px' }}>
+                    {this.state.transaction === 'able_to_fill' &&
+                        <button onClick={() => this.startTransaction371()}>Fill order</button>
+                    }
+                    {this.state.transaction === 'unfillable' &&
+                        <h5 className='errorMsg'>This PO is unfillable</h5>
+                    }
+                    {this.state.transaction === 'checking' &&
+                        <div>
+                            <button onClick={() => this.commitTransaction()}>Commit</button>
+                            <button onClick={() => this.rollbackTransaction()}>Cancel</button>
+                        </div>
+                    }
+                    {this.state.transaction === 'commit_success' &&
+                        <h5 className="successMsg">Commit Success!</h5>
+                    }
+                    {this.state.transaction === 'rollback_success' &&
+                        <h5 className="successMsg">Rollback Success!</h5>
+                    }
+                    {this.state.transaction === 'commit_failed' &&
+                        <h5 className='errorMsg'>Commit Failed!</h5>
+                    }
+                    {this.state.transaction === 'rollback_failed' &&
+                        <h5 className='errorMsg'>Rollback Failed!</h5>
+                    }
+                </div>
             </div >
         );
+
     }
 }

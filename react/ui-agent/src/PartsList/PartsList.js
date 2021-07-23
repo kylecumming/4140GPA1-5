@@ -20,6 +20,10 @@ export default class PartsList extends Component {
         });
     }
 
+    getPartDetails17(part) {
+        this.props.history.push({ pathname: '/partDetails', state: { partNo: part.partNo17 } });
+    }
+
     componentDidMount() {
         this.getPartsList17()
     }
@@ -45,7 +49,7 @@ export default class PartsList extends Component {
                             </thead>
                             <tbody>
                                 {this.state.parts.map((element, index) => (
-                                    <tr key={index}>
+                                    <tr key={index} onClick={this.getPartDetails17.bind(this, element)}>
                                         <td>{element.partNo17}</td>
                                         <td>{element.partName17}</td>
                                         <td>{element.partDescription17}</td>

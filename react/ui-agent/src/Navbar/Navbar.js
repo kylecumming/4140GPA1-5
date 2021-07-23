@@ -7,7 +7,7 @@ class Navbar extends Component {
             <nav className="Navbar">
                 <h1 className="navbar-title">Agent Portal</h1>
                 <ul className="nav-menu">
-                    <li><a href="/home" className="navbar-link">
+                    <li><a href="/" className="navbar-link">
                         Home</a>
                     </li>
                     <li><a href="/searchPO" className="navbar-link">

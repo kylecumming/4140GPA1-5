@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import Axios from 'axios';
 import '../HomePOsList/HomePOsList.css';
 import Navbar from "../Navbar/Navbar"
+import createHistory from 'history/createBrowserHistory'
 
 export default class HomePOsList extends Component {
 
@@ -21,12 +22,14 @@ export default class HomePOsList extends Component {
         });
     }
 
+
+
     componentDidMount() {
         this.getPOsList17()
     }
 
     getPODetails17(PO) {
-        window.location.href = `/PODetails?id=${PO.poNo17}`
+        this.props.history.push({ pathname: '/PODetails', state: { poNo: PO.poNo17 } });
     }
 
     render() {

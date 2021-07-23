@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 export default class Login extends Component {
 
-    // just quick placeholder to redirect to home page 
+    // just quick placeholder to redirect to home page
     render() {
         return (
             <div>

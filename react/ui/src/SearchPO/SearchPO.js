@@ -25,7 +25,7 @@ export default class SearchPO extends Component {
                 PO: response.data,
                 poFound: true,
             });
-            window.location.href = `/PODetails?id=${this.state.PO.poNo17}`
+            this.props.history.push({ pathname: '/PODetails', state: { poNo: this.state.PO.poNo17 } });
         }).catch((err) => {
             this.setState({
                 poFound: false,
@@ -52,7 +52,7 @@ export default class SearchPO extends Component {
                         />
                         <button type="submit" className="search-button" >Search</button>
                     </form>
-                    {this.state.poFound === false && <h5 style={{ color: 'red' }}> Error the PO was not found </h5>}
+                    {this.state.poFound === false && <h5 className="errorMsg"> Error the PO was not found </h5>}
                 </div >
             </div>
         );
