@@ -19,6 +19,9 @@ class Navbar extends Component {
                     <li><a href="/partsList" className="navbar-link">
                         Parts</a>
                     </li>
+                    <li><a href="/" className="navbar-link">
+                        Logout</a>
+                    </li>
                 </ul>
             </nav>
         )
