@@ -1,35 +1,27 @@
 import React, { Component } from "react";
 import Axios from 'axios';
-import '../HomePOsList/HomePOsList.css';
 import Navbar from "../Navbar/Navbar"
-import createHistory from 'history/createBrowserHistory'
 
-export default class HomePOsList extends Component {
+export default class PartsList extends Component {
 
     constructor() {
         super();
         this.state = {
-            orders: []
+            companies: []
         };
-        this.getPOsList17 = this.getPOsList17.bind(this);
+        this.getPartsList17 = this.getPartsList17.bind(this);
     }
 
-    async getPOsList17() {
-        Axios.get(`http://localhost:3000/api/company/getPOList17`).then((response) => {
-            this.setState({ orders: response.data });
+    async getPartsList17() {
+        Axios.get(`http://localhost:3000/api/company/getClientList17`).then((response) => {
+            this.setState({ companies: response.data });
         }).catch((err) => {
             alert(err);
         });
     }
 
-
-
     componentDidMount() {
-        this.getPOsList17()
-    }
-
-    getPODetails17(PO) {
-        this.props.history.push({ pathname: '/PODetails', state: { poNo: PO.poNo17 } });
+        this.getPartsList17()
     }
 
     render() {
@@ -44,21 +36,19 @@ export default class HomePOsList extends Component {
                         <table className="list">
                             <thead>
                                 <tr>
-                                    <th>PO No</th>
-                                    <th>Date</th>
-                                    <th>Location</th>
+                                    <th>Company ID</th>
+                                    <th>Company Name</th>
+                                    <th>City</th>
                                     <th>Money Owed</th>
-                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {this.state.orders.map((element, index) => (
-                                    <tr key={index} onClick={this.getPODetails17.bind(this, element)}>
-                                        <td>{element.poNo17}</td>
-                                        <td>{element.datePO17}</td>
+                                {this.state.companies.map((element, index) => (
+                                    <tr key={index}>
+                                        <td>{element.clientCompId17}</td>
+                                        <td>{element.clientCompName17}</td>
                                         <td>{element.clientCity17}</td>
                                         <td>{element.moneyOwed17}</td>
-                                        <td>{element.status17}</td>
                                     </tr>
                                 ))}
                             </tbody>

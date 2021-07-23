@@ -16,6 +16,12 @@ class Navbar extends Component {
                     <li><a href="/createPO" className="navbar-link">
                         Create a PO</a>
                     </li>
+                    <li><a href="/partsList" className="navbar-link">
+                        Parts</a>
+                    </li>
+                    <li><a href="/" className="navbar-link">
+                        Logout</a>
+                    </li>
                 </ul>
             </nav>
         )

@@ -13,6 +13,12 @@ class Navbar extends Component {
                     <li><a href="/searchPO" className="navbar-link">
                         Search for a PO</a>
                     </li>
+                    <li><a href="/partsList" className="navbar-link">
+                        Parts</a>
+                    </li>
+                    <li><a href="/clientsList" className="navbar-link">
+                        Clients</a>
+                    </li>
                 </ul>
             </nav>
         )
