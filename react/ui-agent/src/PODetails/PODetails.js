@@ -107,7 +107,7 @@ export default class PODetails extends Component {
                     'marginLeft': '10px',
                     'marginRight': '10px'
                 }}>
-                    <table id="POsList">
+                    <table id="list">
                         <thead>
                             <tr>
                                 <th>Line No</th>

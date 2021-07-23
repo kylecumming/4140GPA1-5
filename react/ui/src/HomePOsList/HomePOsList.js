@@ -11,7 +11,6 @@ export default class HomePOsList extends Component {
             orders: [], clientId: 1
         };
         this.getPOsList17 = this.getPOsList17.bind(this);
-        // this.getPODetails17 = this.getPODetails17.bind(this);
     }
 
     async getPOsList17() {
@@ -39,7 +38,7 @@ export default class HomePOsList extends Component {
                         'marginLeft': '10px',
                         'marginRight': '10px'
                     }}>
-                        <table id="POsList">
+                        <table className="list">
                             <thead>
                                 <tr>
                                     <th>PO No</th>
