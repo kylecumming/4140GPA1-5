@@ -227,6 +227,28 @@ app.put('/api/client/cancelProgressingPO17', (req, res) => {
     });
 });
 
+app.post('/api/client/login', (req, res)=> {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    connection.query(
+        "SELECT * FROM clientUser17 WHERE clientCompName17 = ? AND clientCompPassword17 = ?",
+        [username, password],
+        (err, result)=> {
+
+            if(err){
+                res.send({err: err});
+            }
+            
+            if (result.length > 0){
+                res.send(result);
+            } else{
+                res.send({message: "Username or password not found"});
+            }
+        }
+    );
+});
+
 
 app.listen(3000, () => {
     console.log(`Listening on port 3000...`)
