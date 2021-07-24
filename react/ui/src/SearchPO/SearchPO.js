@@ -3,6 +3,18 @@ import Axios from 'axios';
 import '../SearchPO/SearchPO.css';
 import Navbar from "../Navbar/Navbar"
 
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+    }
+    return null;
+}
+
+
 export default class SearchPO extends Component {
 
     constructor() {
@@ -11,7 +23,7 @@ export default class SearchPO extends Component {
             searchPONo: '',
             PO: {},
             poFound: null,
-            companyId: 1 // defaulted for now - will need to be current company 
+            companyId: getCookie("userid") // defaulted for now - will need to be current company 
         };
 
         this.submit = this.submit.bind(this);

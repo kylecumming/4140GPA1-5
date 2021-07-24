@@ -1,12 +1,36 @@
 let express = require("express");
 const { number } = require("joi");
 const Joi = require("joi");
+
+const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+
 let mysql = require('mysql');
 let app = express();
 var cors = require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:2000", "http://localhost:2000/home"],
+    methods: ["GET", "POST", "PUT"],
+    credentials: true
+}));
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(session({
+    key: "userId",
+    secret: "credentials",
+    resave: false,
+    saveUninitialized: false,
+    cookie:{
+        expires: 60*60*24,
+        secure: false,
+    },
+}))
+
+
 
 let connection = mysql.createConnection({
     host: 'db.cs.dal.ca',
@@ -22,6 +46,7 @@ connection.connect(function (err) {
 
     console.log('Connected to the MySQL server.');
 });
+
 
 app.get('/api/client/getPartsList17', (req, res) => {
 
@@ -226,14 +251,21 @@ app.put('/api/client/cancelProgressingPO17', (req, res) => {
 
     });
 });
-
+app.get("/api/client/login", (req, res)=> {
+    if(req.session.user){
+        res.send({loggedIn: true, user: req.session.user})
+    }else{
+        res.send({loggedIn: false})
+    }
+})
 app.post('/api/client/login', (req, res)=> {
     const username = req.body.username;
     const password = req.body.password;
+    const userid = req.body.userid;
 
     connection.query(
-        "SELECT * FROM clientUser17 WHERE clientCompName17 = ? AND clientCompPassword17 = ?",
-        [username, password],
+        "SELECT * FROM clientUser17 WHERE clientCompName17 = ? AND clientCompPassword17 = ? AND clientCompId17 = ?",
+        [username, password, userid],
         (err, result)=> {
 
             if(err){
@@ -241,6 +273,8 @@ app.post('/api/client/login', (req, res)=> {
             }
             
             if (result.length > 0){
+                //setCookie('userid', userid, 30);
+                console.log(req.session.user);
                 res.send(result);
             } else{
                 res.send({message: "Username or password not found"});
