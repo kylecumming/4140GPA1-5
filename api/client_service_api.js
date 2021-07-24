@@ -251,7 +251,6 @@ app.put('/api/client/cancelProgressingPO17', (req, res) => {
 
     });
 });
-<<<<<<< HEAD:client_service_api.js
 app.get("/api/client/login", (req, res)=> {
     if(req.session.user){
         res.send({loggedIn: true, user: req.session.user})
@@ -260,37 +259,22 @@ app.get("/api/client/login", (req, res)=> {
     }
 })
 app.post('/api/client/login', (req, res)=> {
-=======
-
-app.post('/api/client/login', (req, res) => {
->>>>>>> 379d3411b7c2ac40cc46faa85d9609d7af356099:api/client_service_api.js
     const username = req.body.username;
     const password = req.body.password;
     const userid = req.body.userid;
 
     connection.query(
-<<<<<<< HEAD:client_service_api.js
         "SELECT * FROM clientUser17 WHERE clientCompName17 = ? AND clientCompPassword17 = ? AND clientCompId17 = ?",
         [username, password, userid],
         (err, result)=> {
-=======
-        "SELECT * FROM clientUser17 WHERE clientCompName17 = ? AND clientCompPassword17 = ?",
-        [username, password],
-        (err, result) => {
->>>>>>> 379d3411b7c2ac40cc46faa85d9609d7af356099:api/client_service_api.js
 
             if (err) {
                 res.send({ err: err });
             }
-<<<<<<< HEAD:client_service_api.js
             
             if (result.length > 0){
                 //setCookie('userid', userid, 30);
                 console.log(req.session.user);
-=======
-
-            if (result.length > 0) {
->>>>>>> 379d3411b7c2ac40cc46faa85d9609d7af356099:api/client_service_api.js
                 res.send(result);
             } else {
                 res.send({ message: "Username or password not found" });
