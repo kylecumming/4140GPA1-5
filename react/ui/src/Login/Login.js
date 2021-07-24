@@ -71,7 +71,7 @@ for setCookie Function
             </div>
             
 
-            <h4>{loginStatus}</h4>
+            
         </div>
     )
 
