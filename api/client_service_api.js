@@ -200,13 +200,13 @@ app.put('/api/client/cancelProgressingPO17', (req, res) => {
             const sql = `call updatePO17(${data.poNo17}, "Cancelled");`;
             connection.query(sql, function (err, result, fields) {
                 if (err) throw err;
-                // If previous status was pending 
-                if (status17 == "Pending") {
+                // If previous status was Placed 
+                if (status17 == "Placed") {
                     res.send(
                         `The PO with poNo ${data.poNo17} was Cancelled and a full refund has been provided`
                     );
 
-                } else if (status17 == "In Progress") { // order will only be half refunded for cancellation fee
+                } else if (status17 == "Filled") { // order will only be half refunded for cancellation fee
                     res.send(
                         `The PO with poNo ${data.poNo17} was Cancelled, and a cancellation fee has been added to your account`
                     );
@@ -227,23 +227,23 @@ app.put('/api/client/cancelProgressingPO17', (req, res) => {
     });
 });
 
-app.post('/api/client/login', (req, res)=> {
+app.post('/api/client/login', (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
 
     connection.query(
         "SELECT * FROM clientUser17 WHERE clientCompName17 = ? AND clientCompPassword17 = ?",
         [username, password],
-        (err, result)=> {
+        (err, result) => {
 
-            if(err){
-                res.send({err: err});
+            if (err) {
+                res.send({ err: err });
             }
-            
-            if (result.length > 0){
+
+            if (result.length > 0) {
                 res.send(result);
-            } else{
-                res.send({message: "Username or password not found"});
+            } else {
+                res.send({ message: "Username or password not found" });
             }
         }
     );
