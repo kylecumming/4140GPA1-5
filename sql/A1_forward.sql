@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `eeddy`.`POs17` (
   `poNo17` INT(11) NOT NULL AUTO_INCREMENT,
   `clientCompId17` INT(11) NOT NULL,
   `datePO17` DATE NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-  `status17` VARCHAR(45) NOT NULL DEFAULT 'Pending',
+  `status17` VARCHAR(45) NOT NULL DEFAULT 'Placed',
   PRIMARY KEY (`poNo17`),
   INDEX `clientCompId17` (`clientCompId17` ASC),
   CONSTRAINT `clientCompId17`

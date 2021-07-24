@@ -14,7 +14,7 @@ Steps to execute A4
 
 - step 4
 
-    If running the Company agent UI, start the company service using `node company_agent_service_api.js`, otherwise, start the `node client_service_api.js`. If successful there will be the messages "Listening on port 3000..." and "Connected to the MySQL server.".
+    If running the Company agent UI, start the company service using `node api/company_agent_service_api.js`, otherwise, start the `node api/client_service_api.js`. If successful there will be the messages "Listening on port 3000..." and "Connected to the MySQL server.".
 
 - step 5
 

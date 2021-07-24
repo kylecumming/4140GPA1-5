@@ -142,18 +142,21 @@ app.get('/api/company/startTransaction371/:poNo371', (req, res) => {
 
         let getstatus371 = 'SELECT status17 FROM POs17 WHERE poNo17 = ?'
         connection.query(getstatus371, [req.params.poNo371], (err, result) => {
+
             if (result[0].status17 == 'Placed') {
-                res.send('checking');
+                // res.send('checking');
                 let check_fulfill371 = 'SELECT checkFulfill (?)';
                 transaction.query(check_fulfill371, [req.params.poNo371], (err, result) => {
                     if (Object.values(result[0])[0] != 'Filled') {
-                        transaction.rollback(function () {
-                            console.error(err);
-                            throw err;
+                        res.send('unfillable');
+                        transaction.rollback(function (err) {
+
                         });
+
                     } else if (result.length === 0) {
                         res.status(404).send(`Error: POLine for poNo ${req.params.poNo371} was not found`)
                     } else {
+                        res.send('checking');
                         console.log('waiting for end request');
                         app.get('/api/company/endTransaction371/:status371', (req1, res1) => {
                             if (req1.params.status371 == 'commit') {
@@ -209,7 +212,7 @@ app.put('/api/company/updatePO17', (req, res) => {
     // Validate request parameters
     const schema = Joi.object({
         poNo17: Joi.number().integer().required(),
-        status17: Joi.string().valid("Pending", "Cancelled", "Complete", "In Progress")
+        status17: Joi.string().valid("Placed", "Cancelled", "Complete", "Filled")
     });
     const { error } = schema.validate(req.body);
     if (error) {

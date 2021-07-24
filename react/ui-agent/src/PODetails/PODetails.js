@@ -32,7 +32,7 @@ export default class PODetails extends Component {
                 poLines: linesResponseTwo
             });
 
-            if (this.state.po.status17 === 'Pending') {
+            if (this.state.po.status17 === 'Pending' || this.state.po.status17 === 'Placed') {
                 this.setState({
                     transaction: 'able_to_fill'
                 });

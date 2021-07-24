@@ -18,12 +18,12 @@ BEGIN
 	
 		SELECT clientCompId17 into clientCompId FROM POs17 WHERE poNo17=selectedPONo17;
 		SELECT SUM(linePrice17) into TotalPOPrice FROM POLines17 WHERE poNo17=selectedPONo17;
-		IF  currStatus = "Pending" THEN
+		IF  currStatus = "Placed" THEN
 			UPDATE clientUser17
 			SET moneyOwed17=moneyOwed17 - TotalPOPrice
 			WHERE clientCompId17=clientCompId;
 		END IF;
-		IF currStatus = "In Progress" THEN
+		IF currStatus = "Filled" THEN
 			UPDATE clientUser17
 			SET moneyOwed17=moneyOwed17 - (TotalPOPrice * 0.5) # Cancellation Fee
 			WHERE clientCompId17=clientCompId;

@@ -46,6 +46,8 @@ export default class HomePOsList extends Component {
                                 <tr>
                                     <th>PO No</th>
                                     <th>Date</th>
+                                    <th>Location</th>
+                                    <th>Money Owed</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
@@ -54,6 +56,8 @@ export default class HomePOsList extends Component {
                                     <tr key={index} onClick={this.getPODetails17.bind(this, element)}>
                                         <td>{element.poNo17}</td>
                                         <td>{element.datePO17}</td>
+                                        <td>{element.clientCity17}</td>
+                                        <td>{element.moneyOwed17}</td>
                                         <td>{element.status17}</td>
                                     </tr>
                                 ))}
