@@ -17,19 +17,41 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(session({
     key: "userId",
     secret: "credentials",
     resave: false,
     saveUninitialized: false,
-    cookie:{
-        expires: 60*60*24,
+    cookie: {
+        expires: 60 * 60 * 24,
         secure: false,
     },
 }))
 
+const yargs = require('yargs');
+
+const argv = yargs
+    .option('company', {
+        alias: 'c',
+        description: 'Tell which company to connect to',
+        type: 'string',
+        demand: true,
+        choices: ['w', 'x', 'y', 'z']
+    })
+    .help()
+    .alias('help', 'h')
+    .argv;
+
+company = argv.company
+
+url_start = `/api/client/${company}`
+
+parts_table = `${company}_parts17`
+clients_table = `${company}_clientUser17`
+POs_table = `${company}_POs17`
+POLines_table = `${company}_POLines17`
 
 
 let connection = mysql.createConnection({
@@ -48,9 +70,9 @@ connection.connect(function (err) {
 });
 
 
-app.get('/api/client/getPartsList17', (req, res) => {
+app.get(`${url_start}/getPartsList17`, (req, res) => {
 
-    let SQL_list_parts = 'SELECT * FROM parts17';
+    let SQL_list_parts = `SELECT * FROM ${parts_table}`;
     connection.query(SQL_list_parts, (error, result) => {
         if (error) {
             throw error
@@ -63,9 +85,9 @@ app.get('/api/client/getPartsList17', (req, res) => {
 
 })
 
-app.get('/api/client/getPOList17/:clientCompId17', (req, res) => {
+app.get(`${url_start}/getPOList17/:clientCompId17`, (req, res) => {
 
-    let SQL_list_POs = 'SELECT * FROM POs17 WHERE clientCompId17 = ?';
+    let SQL_list_POs = `SELECT * FROM ${POs_table} WHERE clientCompId17 = ?`;
     connection.query(SQL_list_POs, [req.params.clientCompId17], (error, result) => {
         if (error) {
             throw error
@@ -78,8 +100,8 @@ app.get('/api/client/getPOList17/:clientCompId17', (req, res) => {
 });
 
 
-app.get('/api/client/getPOs17/:poNo17/:clientCompId17', (req, res) => {
-    let SQL_list_one_po = 'SELECT * FROM POs17 WHERE poNo17 = ? AND clientCompId17 = ?';
+app.get(`${url_start}/getPOs17/:poNo17/:clientCompId17`, (req, res) => {
+    let SQL_list_one_po = `SELECT * FROM ${POs_table} WHERE poNo17 = ? AND clientCompId17 = ?`;
     connection.query(SQL_list_one_po, [req.params.poNo17, req.params.clientCompId17], (error, result) => {
         if (error) {
             throw error
@@ -92,9 +114,9 @@ app.get('/api/client/getPOs17/:poNo17/:clientCompId17', (req, res) => {
 
 });
 
-app.get('/api/client/getPOs17/:poNo17', (req, res) => {
+app.get(`${url_start}/getPOs17/:poNo17`, (req, res) => {
 
-    let SQL_list_one_po = 'SELECT * FROM POs17 WHERE poNo17 = ?';
+    let SQL_list_one_po = `SELECT * FROM ${POs_table} WHERE poNo17 = ?`;
     connection.query(SQL_list_one_po, [req.params.poNo17], (error, result) => {
         if (error) {
             throw error
@@ -108,9 +130,9 @@ app.get('/api/client/getPOs17/:poNo17', (req, res) => {
 });
 
 
-app.get('/api/client/getPOLines17/:poNo17', (req, res) => {
+app.get(`${url_start}/getPOLines17/:poNo17`, (req, res) => {
 
-    let SQL_list_po_lines = 'SELECT * FROM POLines17 WHERE poNo17 = ?';
+    let SQL_list_po_lines = `SELECT * FROM ${POLines_table} WHERE poNo17 = ?`;
     connection.query(SQL_list_po_lines, [req.params.poNo17], (error, result) => {
         if (error) {
             throw error
@@ -125,9 +147,9 @@ app.get('/api/client/getPOLines17/:poNo17', (req, res) => {
 
 
 
-app.get('/api/client/getPOList17', (req, res) => {
+app.get(`${url_start}/getPOList17`, (req, res) => {
 
-    let SQL_list_POs = 'SELECT * FROM POs17';
+    let SQL_list_POs = `SELECT * FROM ${POs_table}`;
     connection.query(SQL_list_POs, (error, result) => {
         if (error) {
             throw error
@@ -139,7 +161,7 @@ app.get('/api/client/getPOList17', (req, res) => {
     });
 });
 
-app.post('/api/client/postNewOrder17', (req, res) => {
+app.post(`${url_start}/postNewOrder17`, (req, res) => {
     // Varidate request parameter
     const schema = Joi.object({
         clientCompId17: Joi.number().integer().required(),
@@ -154,7 +176,7 @@ app.post('/api/client/postNewOrder17', (req, res) => {
     }
 
     // Check if client with clientCompId17 and clientCompPassword17 exists 
-    const sqlSelect = `SELECT * FROM clientUser17 WHERE clientCompId17 = '${req.body.clientCompId17}' AND clientCompPassword17 = '${req.body.clientCompPassword17}';`;
+    const sqlSelect = `SELECT * FROM ${clients_table} WHERE clientCompId17 = '${req.body.clientCompId17}' AND clientCompPassword17 = '${req.body.clientCompPassword17}';`;
 
     const data = {
         clientCompId17: req.body.clientCompId17,
@@ -165,7 +187,7 @@ app.post('/api/client/postNewOrder17', (req, res) => {
     connection.query(sqlSelect, function (err, result) {
         // If PO exists
         if (result.length !== 0) {
-            const sqlQtytest = `SELECT * FROM parts17 WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
+            const sqlQtytest = `SELECT * FROM ${parts_table} WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
 
             connection.query(sqlQtytest, function (err, result) {
                 // If there are more qty than POline
@@ -200,7 +222,7 @@ app.post('/api/client/postNewOrder17', (req, res) => {
 
 });
 
-app.put('/api/client/cancelProgressingPO17', (req, res) => {
+app.put(`${url_start}/cancelProgressingPO17`, (req, res) => {
     //Validate request parameters
     const schema = Joi.object({
         poNo17: Joi.number().integer().required()
@@ -212,7 +234,7 @@ app.put('/api/client/cancelProgressingPO17', (req, res) => {
     }
 
     // Check if PO with poNo17 exists 
-    const sqlSelect = `SELECT status17 FROM POs17 WHERE poNo17='${req.body.poNo17}';`;
+    const sqlSelect = `SELECT status17 FROM ${POs_table} WHERE poNo17='${req.body.poNo17}';`;
 
     const data = {
         poNo17: req.body.poNo17
@@ -251,28 +273,29 @@ app.put('/api/client/cancelProgressingPO17', (req, res) => {
 
     });
 });
-app.get("/api/client/login", (req, res)=> {
-    if(req.session.user){
-        res.send({loggedIn: true, user: req.session.user})
-    }else{
-        res.send({loggedIn: false})
+app.get(`${url_start}/login`, (req, res) => {
+    if (req.session.user) {
+        res.send({ loggedIn: true, user: req.session.user })
+    } else {
+        res.send({ loggedIn: false })
     }
 })
-app.post('/api/client/login', (req, res)=> {
+
+app.post(`${url_start}/login`, (req, res) => {
     const username = req.body.username;
     const password = req.body.password;
     const userid = req.body.userid;
 
     connection.query(
-        "SELECT * FROM clientUser17 WHERE clientCompName17 = ? AND clientCompPassword17 = ? AND clientCompId17 = ?",
+        `SELECT * FROM ${clients_table} WHERE clientCompName17 = ? AND clientCompPassword17 = ? AND clientCompId17 = ?`,
         [username, password, userid],
-        (err, result)=> {
+        (err, result) => {
 
             if (err) {
                 res.send({ err: err });
             }
-            
-            if (result.length > 0){
+
+            if (result.length > 0) {
                 //setCookie('userid', userid, 30);
                 console.log(req.session.user);
                 res.send(result);
@@ -284,6 +307,22 @@ app.post('/api/client/login', (req, res)=> {
 });
 
 
-app.listen(3000, () => {
-    console.log(`Listening on port 3000...`)
+// Deafult port different for each company
+switch (company) {
+    case 'w':
+        port = 3000
+        break;
+    case 'x':
+        port = 3001
+        break;
+    case 'y':
+        port = 3002
+        break;
+    case 'z':
+        port = 3003
+        break;
+}
+
+app.listen(port, () => {
+    console.log(`Listening on port ${port}...`)
 });

@@ -22,6 +22,29 @@ let transaction = mysql.createConnection({
 });
 
 
+const yargs = require('yargs');
+
+const argv = yargs
+    .option('company', {
+        alias: 'c',
+        description: 'Tell which company to connect to',
+        type: 'string',
+        demand: true,
+        choices: ['w', 'x', 'y', 'z']
+    })
+    .help()
+    .alias('help', 'h')
+    .argv;
+
+company = argv.company
+
+url_start = `/api/company/${company}`
+
+parts_table = `${company}_parts17`
+clients_table = `${company}_clientUser17`
+POs_table = `${company}_POs17`
+POLines_table = `${company}_POLines17`
+
 connection.connect(function (err) {
     if (err) {
         return console.error('error: ', err.message);
@@ -30,9 +53,9 @@ connection.connect(function (err) {
     console.log('Connected to the MySQL server.');
 });
 
-app.get('/api/company/getPart17/:partNo17', (req, res) => {
+app.get(`${url_start}/getPart17/:partNo17`, (req, res) => {
 
-    let SQL_list_one_part = 'SELECT * FROM parts17 WHERE partNo17 = ?';
+    let SQL_list_one_part = `SELECT * FROM ${parts_table} WHERE partNo17 = ?`;
     connection.query(SQL_list_one_part, [req.params.partNo17], (error, result) => {
         if (error) {
             throw error
@@ -45,9 +68,9 @@ app.get('/api/company/getPart17/:partNo17', (req, res) => {
 
 });
 
-app.get('/api/company/getPOs17/:poNo17', (req, res) => {
+app.get(`${url_start}/getPOs17/:poNo17`, (req, res) => {
 
-    let SQL_list_one_po = 'SELECT * FROM POs17 WHERE poNo17 = ?';
+    let SQL_list_one_po = `SELECT * FROM ${POs_table} WHERE poNo17 = ?`;
     connection.query(SQL_list_one_po, [req.params.poNo17], (error, result) => {
         if (error) {
             throw error
@@ -60,9 +83,9 @@ app.get('/api/company/getPOs17/:poNo17', (req, res) => {
 
 });
 
-app.get('/api/company/getPOList17', (req, res) => {
+app.get(`${url_start}/getPOList17`, (req, res) => {
 
-    let SQL_list_POs = 'SELECT * FROM POs17';
+    let SQL_list_POs = `SELECT * FROM ${POs_table}`;
     connection.query(SQL_list_POs, (error, result) => {
         if (error) {
             throw error
@@ -74,9 +97,9 @@ app.get('/api/company/getPOList17', (req, res) => {
     });
 });
 
-app.get('/api/company/getClientList17', (req, res) => {
+app.get(`${url_start}/getClientList17`, (req, res) => {
 
-    let client_info = "SELECT * FROM clientUser17";
+    let client_info = `SELECT * FROM ${clients_table}`;
     connection.query(client_info, (error, result) => {
         if (error) {
             throw error
@@ -88,9 +111,9 @@ app.get('/api/company/getClientList17', (req, res) => {
     });
 });
 
-app.get('/api/company/getSpecificClient17/:id17', (req, res) => {
+app.get(`${url_start}/getSpecificClient17/:id17`, (req, res) => {
 
-    let specific_client = 'SELECT * FROM clientUser17 WHERE clientCompID17 = ?';
+    let specific_client = `SELECT * FROM ${clients_table} WHERE clientCompID17 = ?`;
     connection.query(specific_client, [req.params.id17], (error, result) => {
         if (error) {
             throw error
@@ -103,9 +126,9 @@ app.get('/api/company/getSpecificClient17/:id17', (req, res) => {
 
 });
 
-app.get('/api/company/getPODetail371/:poNo371', (req, res) => {
+app.get(`${url_start}/getPODetail371/:poNo371`, (req, res) => {
 
-    let specific_po = 'SELECT POs17.*, clientUser17.clientCity17, clientUser17.moneyOwed17 FROM POs17 NATURAL JOIN clientUser17 WHERE POs17.poNo17 = ?;';
+    let specific_po = `SELECT ${POs_table}.*, ${clients_table}.clientCity17, ${clients_table}.moneyOwed17 FROM ${POs_table} NATURAL JOIN ${clients_table} WHERE ${POs_table}.poNo17 = ?;`;
     connection.query(specific_po, [req.params.poNo371], (error, result) => {
         if (error) {
             throw error
@@ -117,9 +140,9 @@ app.get('/api/company/getPODetail371/:poNo371', (req, res) => {
     });
 });
 
-app.get('/api/company/getPOLines371/:poNo371', (req, res) => {
+app.get(`${url_start}/getPOLines371/:poNo371`, (req, res) => {
 
-    let specific_poLine = 'SELECT POLines371.linePrice17, POLines371.lineNO17, POLines371.partNo17, POLines371.qty17 AS order_qty371, parts17.qty17 AS avail_qty371, parts17.currentPrice17 FROM (SELECT * FROM POLines17 WHERE poNo17 = ?) POLines371 LEFT JOIN parts17 ON POLines371.partNo17 = parts17.partNo17';
+    let specific_poLine = `SELECT POLines371.linePrice17, POLines371.lineNO17, POLines371.partNo17, POLines371.qty17 AS order_qty371, ${parts_table}.qty17 AS avail_qty371, ${parts_table}.currentPrice17 FROM (SELECT * FROM ${POLines_table} WHERE poNo17 = ?) POLines371 LEFT JOIN ${parts_table} ON POLines371.partNo17 = ${parts_table}.partNo17`;
     connection.query(specific_poLine, [req.params.poNo371], (error, result) => {
         if (error) {
             throw error
@@ -131,7 +154,7 @@ app.get('/api/company/getPOLines371/:poNo371', (req, res) => {
     });
 });
 
-app.get('/api/company/startTransaction371/:poNo371', (req, res) => {
+app.get(`${url_start}/startTransaction371/:poNo371`, (req, res) => {
 
     transaction.beginTransaction(function (err) {
         console.log('transaction started')
@@ -140,7 +163,7 @@ app.get('/api/company/startTransaction371/:poNo371', (req, res) => {
             return;
         }
 
-        let getstatus371 = 'SELECT status17 FROM POs17 WHERE poNo17 = ?'
+        let getstatus371 = `SELECT status17 FROM ${POs_table} WHERE poNo17 = ?`
         connection.query(getstatus371, [req.params.poNo371], (err, result) => {
 
             if (result[0].status17 == 'Placed') {
@@ -192,9 +215,9 @@ app.get('/api/company/startTransaction371/:poNo371', (req, res) => {
 
 
 
-app.get('/api/company/getPartsList17', (req, res) => {
+app.get(`${url_start}/getPartsList17`, (req, res) => {
 
-    let SQL_list_Parts = 'SELECT * FROM parts17';
+    let SQL_list_Parts = `SELECT * FROM ${parts_table}`;
     connection.query(SQL_list_Parts, (error, result) => {
         if (error) {
             throw error
@@ -208,7 +231,7 @@ app.get('/api/company/getPartsList17', (req, res) => {
     });
 });
 
-app.put('/api/company/updatePO17', (req, res) => {
+app.put(`${url_start}/updatePO17`, (req, res) => {
     // Validate request parameters
     const schema = Joi.object({
         poNo17: Joi.number().integer().required(),
@@ -221,7 +244,7 @@ app.put('/api/company/updatePO17', (req, res) => {
     }
 
     // Check if PO with poNo17 exists 
-    const sqlSelect = `SELECT * FROM POs17 WHERE poNo17='${req.body.poNo17}';`;
+    const sqlSelect = `SELECT * FROM ${POs_table} WHERE poNo17='${req.body.poNo17}';`;
 
     const data = {
         poNo17: req.body.poNo17,
@@ -257,7 +280,7 @@ app.put('/api/company/updatePO17', (req, res) => {
 
 });
 
-app.put('/api/company/updateparts17', (req, res) => {
+app.put(`${url_start}/updateparts17`, (req, res) => {
 
     const schema = Joi.object({
         partNo17: Joi.number().integer().required(),
@@ -271,7 +294,7 @@ app.put('/api/company/updateparts17', (req, res) => {
         return;
     }
 
-    const sqlSelect = `SELECT * FROM parts17 WHERE partNo17='${req.body.partNo17}';`;
+    const sqlSelect = `SELECT * FROM ${parts_table} WHERE partNo17='${req.body.partNo17}';`;
 
     const data = {
         partNo17: req.body.partNo17,
@@ -301,7 +324,7 @@ app.put('/api/company/updateparts17', (req, res) => {
     });
 });
 
-app.put('/api/company/updateclientuser17', (req, res) => {
+app.put(`${url_start}/updateclientuser17`, (req, res) => {
 
     const schema = Joi.object({
         clientCompId17: Joi.number().integer().required(),
@@ -314,7 +337,7 @@ app.put('/api/company/updateclientuser17', (req, res) => {
         return;
     }
 
-    const sqlSelect = `SELECT * FROM clientUser17 WHERE clientCompId17='${req.body.clientCompId17}';`;
+    const sqlSelect = `SELECT * FROM ${clients_table} WHERE clientCompId17='${req.body.clientCompId17}';`;
 
     const data = {
         clientCompId17: req.body.clientCompId17,
@@ -343,8 +366,23 @@ app.put('/api/company/updateclientuser17', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log(`Listening on port 3000...`)
+
+// Deafult port different for each company
+switch (company) {
+    case 'w':
+        port = 4000
+        break;
+    case 'x':
+        port = 4001
+        break;
+    case 'y':
+        port = 4002
+        break;
+    case 'z':
+        port = 4003
+        break;
+}
+
+app.listen(port, () => {
+    console.log(`Listening on port ${port}...`)
 });
-
-
