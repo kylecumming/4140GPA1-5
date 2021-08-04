@@ -61,7 +61,7 @@ let connection = mysql.createConnection({
     database: 'eeddy'
 });
 
-connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) {
         return console.error('error: ', err.message);
     }
@@ -84,6 +84,22 @@ app.get(`${url_start}/getPartsList17`, (req, res) => {
     });
 
 })
+
+// get specific part
+app.get(`${url_start}/getPart/:partNo17`, (req, res) => {
+
+    let SQL_list_parts = `SELECT * FROM ${parts_table} WHERE partNo17 = ?`;
+    connection.query(SQL_list_parts, [req.params.partNo17], (error, result) => {
+        if (error) {
+            throw error
+        } else if (result.length === 0) {
+            res.status(404).send(`Error: Part with ID ${req.params.partNo17} was not found`)
+        } else {
+            res.send(result[0])
+        }
+    });
+});
+
 
 //get List of PO with ClientID
 app.get(`${url_start}/getPOList17/:clientCompId17`, (req, res) => {
@@ -185,20 +201,21 @@ app.post(`${url_start}/postNewOrder17`, (req, res) => {
         poLines371: req.body.poLines371
     };
 
-    connection.query(sqlSelect, function(err, result) {
+    connection.query(sqlSelect, function (err, result) {
         // If PO exists
         if (result.length !== 0) {
             // const sqlQtytest = `SELECT * FROM ${parts_table} WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
             const sqlQtytest = `SELECT * FROM ${parts_table} WHERE partNo17 = 1 AND qty17 >= 0`;
 
-            connection.query(sqlQtytest, function(err, result) {
+            connection.query(sqlQtytest, function (err, result) {
                 // If there are more qty than POline
                 if (result.length !== 0) {
-                    connection.query("CALL createNoLinePO371(" + data.clientCompId17 + ", @poNo);", (err, result) => {});
+                    connection.query("CALL createNoLinePO17(" + data.clientCompId17 + ", '" + company + "', @poNo);", (err, result) => { });
+
                     console.log(data.poLines371);
-                    data.poLines371.forEach(function(element) {
+                    data.poLines371.forEach(function (element) {
                         if (element.id != 0) {
-                            connection.query("CALL createPOLines371(@poNo, " + element.partNo + ", " + element.qty + ")", (err, result) => {
+                            connection.query("CALL createPOLines17(@poNo, " + element.partNo + ", " + element.qty + ", '" + company + "')", (err, result) => {
                                 console.log(result);
                             });
                         }
@@ -251,12 +268,12 @@ app.put(`${url_start}/cancelProgressingPO17`, (req, res) => {
         poNo17: req.body.poNo17
     };
 
-    connection.query(sqlSelect, function(err, results) {
+    connection.query(sqlSelect, function (err, results) {
         //if PO exists
         if (results.length !== 0) {
             status17 = results[0].status17;
             const sql = `call updatePO17(${data.poNo17}, "Cancelled");`;
-            connection.query(sql, function(err, result, fields) {
+            connection.query(sql, function (err, result, fields) {
                 if (err) throw err;
                 // If previous status was Placed 
                 if (status17 == "Placed") {
