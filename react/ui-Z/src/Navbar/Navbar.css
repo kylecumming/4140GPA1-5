@@ -1,0 +1,36 @@
+.Navbar {
+    background:  gray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.nav-menu{
+   display: grid;
+   grid-template-columns: repeat(5, auto);
+   grid-gap: 10px;
+   list-style: none;
+   text-align: center;
+   width: 70vw;
+   margin-right: 10px;
+   justify-content: end;
+}
+
+.navbar-title {
+    color: white;
+    display: inline;
+    white-space: nowrap;
+    margin-left: 10px;
+}
+
+.navbar-link {
+    color: white;
+    text-decoration: none;
+    padding: 10px;
+}
+
+.navbar-link:hover {
+    background-color: black;
+
+}
