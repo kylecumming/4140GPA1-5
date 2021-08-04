@@ -25,7 +25,7 @@ for setCookie Function
 
     Axios.defaults.withCredentials = true;
     const login = () => {
-        Axios.post(`http://localhost:3000/api/client/login`, {
+        Axios.post(`http://localhost:3000/api/client/w/login`, {
             username: username,
             password: password,
             userid: userid,
@@ -42,40 +42,65 @@ for setCookie Function
     };
 
     useEffect(() => {
-        Axios.get("http://localhost:3000/api/client/login").then((response) => {
+        Axios.get("http://localhost:3000/api/client/w/login").then((response) => {
             if (response.data.loggedIn === true) {
                 setLoginStatus(response.data.user[0].username);
             }
         });
     }, []);
 
-    return (
-        <div>
-            <div class="loginPage">
-                <h1>Client Login</h1>
-                <div>
-                    <label for="Username">Username</label>
-                    <input type='Username' name='Username' id="Username" placeholder='Enter Username' required onChange={(e) => { setUsername(e.target.value) }} />
-                </div>
-                <div>
-                    <label for="Password">Password</label>
-                    <input type='Password' name='Password' placeholder='Enter Password' required onChange={(e) => { setPassword(e.target.value) }} />
-                </div>
-                <div>
-                    <label for="userid">ClientId</label>
-                    <input type='userid' name='userid' placeholder='Enter UserId' required onChange={(e) => { setUserid(e.target.value) }} />
-                </div>
-                <button onClick={login}>Log In</button>
+    return ( <
+        div >
+        <
+        div class = "loginPage" >
+        <
+        h1 > Client Login < /h1> <
+        div >
+        <
+        label
+        for = "Username" > Username < /label> <
+        input type = 'Username'
+        name = 'Username'
+        id = "Username"
+        placeholder = 'Enter Username'
+        required onChange = {
+            (e) => { setUsername(e.target.value) } }
+        /> <
+        /div> <
+        div >
+        <
+        label
+        for = "Password" > Password < /label> <
+        input type = 'Password'
+        name = 'Password'
+        placeholder = 'Enter Password'
+        required onChange = {
+            (e) => { setPassword(e.target.value) } }
+        /> <
+        /div> <
+        div >
+        <
+        label
+        for = "userid" > ClientId < /label> <
+        input type = 'userid'
+        name = 'userid'
+        placeholder = 'Enter UserId'
+        required onChange = {
+            (e) => { setUserid(e.target.value) } }
+        /> <
+        /div> <
+        button onClick = { login } > Log In < /button>
 
-                <h1>{loginStatus}</h1>
-            </div>
+        <
+        h1 > { loginStatus } < /h1> <
+        /div>
 
 
 
-        </div>
+        <
+        /div>
     )
 
 }
 
 export default Login;
-

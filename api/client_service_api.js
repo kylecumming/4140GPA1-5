@@ -168,9 +168,8 @@ app.post(`${url_start}/postNewOrder17`, (req, res) => {
     // Varidate request parameter
     const schema = Joi.object({
         clientCompId17: Joi.number().integer().required(),
-        // partNo17: Joi.number().integer().required(),
-        // qty17: Joi.number().integer().required(),
-        clientCompPassword17: Joi.string().required()
+        clientCompPassword17: Joi.string().required(),
+        poLines371: Joi.array().required()
     });
     const { error } = schema.validate(req.body);
     if (error) {
@@ -183,19 +182,27 @@ app.post(`${url_start}/postNewOrder17`, (req, res) => {
 
     const data = {
         clientCompId17: req.body.clientCompId17,
-        partNo17: req.body.partNo17,
-        qty17: req.body.qty17
+        poLines371: req.body.poLines371
     };
 
     connection.query(sqlSelect, function(err, result) {
         // If PO exists
         if (result.length !== 0) {
-            const sqlQtytest = `SELECT * FROM ${parts_table} WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
+            // const sqlQtytest = `SELECT * FROM ${parts_table} WHERE partNo17 = '${data.partNo17}' AND qty17 >= '${data.qty17}'`;
+            const sqlQtytest = `SELECT * FROM ${parts_table} WHERE partNo17 = 1 AND qty17 >= 0`;
 
             connection.query(sqlQtytest, function(err, result) {
                 // If there are more qty than POline
                 if (result.length !== 0) {
-                    connection.query("CALL createSinglePO17(" + data.clientCompId17 + ", " + data.partNo17 + ", " + data.qty17 + ", @poNo);", (err, result) => {});
+                    connection.query("CALL createNoLinePO371(" + data.clientCompId17 + ", @poNo);", (err, result) => {});
+                    console.log(data.poLines371);
+                    data.poLines371.forEach(function(element) {
+                        if (element.id != 0) {
+                            connection.query("CALL createPOLines371(@poNo, " + element.partNo + ", " + element.qty + ")", (err, result) => {
+                                console.log(result);
+                            });
+                        }
+                    });
                     connection.query("SELECT @poNo;", (err, result) => {
                         if (err) throw err;
                         res.send(

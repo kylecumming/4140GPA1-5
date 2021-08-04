@@ -5,13 +5,13 @@ BEGIN
     DECLARE itemPrice float;
     DECLARE totalPrice float;
 
-   INSERT INTO `POs17` (`clientCompId17`, `datePO17`) VALUES ( createPOClientCompId17, CURRENT_DATE());
+   INSERT INTO `w_POs17` (`clientCompId17`, `datePO17`) VALUES ( createPOClientCompId17, CURRENT_DATE());
 
     SELECT last_insert_id() INTO poNo;
-    SELECT currentPrice17 INTO itemPrice FROM parts17 WHERE partNo17 = selectedpartNo17;
+    SELECT currentPrice17 INTO itemPrice FROM w_parts17 WHERE partNo17 = selectedpartNo17;
     SELECT itemPrice * selectedQty17 INTO totalPrice;
 
-	INSERT INTO `POLines17` (`poNo17`, `partNo17`, `linePrice17`, `qty17`) VALUES (poNo, selectedpartNo17, totalPrice, selectedQty17);
+	INSERT INTO `w_POLines17` (`poNo17`, `partNo17`, `linePrice17`, `qty17`) VALUES (poNo, selectedpartNo17, totalPrice, selectedQty17);
 
 END
 //
