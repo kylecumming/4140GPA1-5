@@ -19,6 +19,16 @@ class Navbar extends Component {
                     <li><a href="/clientsList" className="navbar-link">
                         Clients</a>
                     </li>
+                    <li>
+                        <a href="allClientsList" className="navbar-link">
+                            All Clients
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/allPartsList" className="navbar-link">
+                            All Parts
+                        </a>
+                    </li>
                 </ul>
             </nav>
         )

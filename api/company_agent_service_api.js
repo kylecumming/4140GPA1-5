@@ -366,6 +366,53 @@ app.put(`${url_start}/updateclientuser17`, (req, res) => {
     });
 });
 
+app.get(`/api/company/z/getAllClientList17`, (req, res) => {
+
+    let client_info = `SELECT *, 'Client W' as TableName
+    from w_clientUser17
+    union all
+    select *, 'Client X' as TableName
+    from x_clientUser17
+    union all
+    select *, 'Client Y' as TableName
+    from y_clientUser17
+    order by TableName;`;
+    connection.query(client_info, (error, result) => {
+        if (error) {
+            throw error
+        } else if (result.length === 0) {
+            res.status(404).send(`Error: client is empty`)
+        } else {
+            res.send(result)
+        }
+    });
+});
+
+app.get(`/api/company/z/getAllPartsList17`, (req, res) => {
+
+    let SQL_list_Parts = `SELECT *, 'Client W' as TableName
+    from w_parts17
+    union all
+    select *, 'Client X' as TableName
+    from x_parts17
+    union all
+    select *, 'Client Y' as TableName
+    from y_parts17
+    order by TableName;`;
+    connection.query(SQL_list_Parts, (error, result) => {
+        if (error) {
+            throw error
+        }
+        else if (result.length === 0) {
+            res.status(404).send('Error: parts list is empty')
+        }
+        else {
+            res.send(result)
+        }
+    });
+});
+
+
 
 // Deafult port different for each company
 switch (company) {
