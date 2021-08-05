@@ -169,39 +169,43 @@ app.get(`${url_start}/startTransaction371/:poNo371`, (req, res) => {
 
             if (result[0].status17 == 'Placed') {
                 // res.send('checking');
-                let check_fulfill371 = 'SELECT checkFulfill (?)';
-                transaction.query(check_fulfill371, [req.params.poNo371], (err, result) => {
-                    if (Object.values(result[0])[0] != 'Filled') {
-                        res.send('unfillable');
-                        transaction.rollback(function(err) {
+                transaction.query("CALL checkFulfill17(" + req.params.poNo371 + ", '" + company + "', @status17);", (err, result) => {
+                    console.log('checkFulfill called')
+                    transaction.query(getstatus371, [req.params.poNo371], (err, result) => {
+                        console.log(Object.values(result[0])[0]);
+                        if (Object.values(result[0])[0] != 'Filled') {
+                            res.send('unfillable');
+                            transaction.rollback(function(err) {
+                                console.log("Rollbacked with error");
+                            });
 
-                        });
-
-                    } else if (result.length === 0) {
-                        res.status(404).send(`Error: POLine for poNo ${req.params.poNo371} was not found`)
-                    } else {
-                        res.send('checking');
-                        console.log('waiting for end request');
-                        app.get('/api/company/endTransaction371/:status371', (req1, res1) => {
-                            if (req1.params.status371 == 'commit') {
-                                transaction.commit(function(err) {
-                                    if (err) {
-                                        transaction.rollback(function() {
-                                            throw err;
-                                        });
-                                    }
-                                    console.log('Commit: success !');
-                                    res1.send('Commit: success !');
-                                });
-                            } else {
-                                transaction.rollback(function() {
-                                    console.log('Roll back: success !');
-                                    res1.send('Roll back: success !');
-                                });
-                            }
-                        });
-                    }
+                        } else if (result.length === 0) {
+                            res.status(404).send(`Error: POLine for poNo ${req.params.poNo371} was not found`)
+                        } else {
+                            res.send('checking');
+                            console.log('waiting for end request');
+                            app.get(`${url_start}/endTransaction371/:status371`, (req1, res1) => {
+                                if (req1.params.status371 == 'commit') {
+                                    transaction.commit(function(err) {
+                                        if (err) {
+                                            transaction.rollback(function() {
+                                                throw err;
+                                            });
+                                        }
+                                        console.log('Commit: success !');
+                                        res1.send('Commit: success !');
+                                    });
+                                } else {
+                                    transaction.rollback(function() {
+                                        console.log('Roll back: success !');
+                                        res1.send('Roll back: success !');
+                                    });
+                                }
+                            });
+                        }
+                    });
                 });
+
             } else {
                 res.send('unfillable');
             }
