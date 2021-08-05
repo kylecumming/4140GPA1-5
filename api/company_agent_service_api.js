@@ -45,7 +45,7 @@ clients_table = `${company}_clientUser17`
 POs_table = `${company}_POs17`
 POLines_table = `${company}_POLines17`
 
-connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) {
         return console.error('error: ', err.message);
     }
@@ -85,7 +85,6 @@ app.get(`${url_start}/getPOs17/:poNo17`, (req, res) => {
 
 app.get(`${url_start}/getPOList17`, (req, res) => {
 
-    // let SQL_list_POs = `SELECT * FROM ${POs_table}`;
     let SQL_list_POs = `SELECT ${POs_table}.*, ${clients_table}.clientCity17, ${clients_table}.moneyOwed17 FROM ${POs_table} NATURAL JOIN ${clients_table};`;
     connection.query(SQL_list_POs, (error, result) => {
         if (error) {
@@ -157,7 +156,7 @@ app.get(`${url_start}/getPOLines371/:poNo371`, (req, res) => {
 
 app.get(`${url_start}/startTransaction371/:poNo371`, (req, res) => {
 
-    transaction.beginTransaction(function(err) {
+    transaction.beginTransaction(function (err) {
         console.log('transaction started')
         if (err) {
             console.error(err);
@@ -169,6 +168,7 @@ app.get(`${url_start}/startTransaction371/:poNo371`, (req, res) => {
 
             if (result[0].status17 == 'Placed') {
                 // res.send('checking');
+<<<<<<< HEAD
                 transaction.query("CALL checkFulfill17(" + req.params.poNo371 + ", '" + company + "', @status17);", (err, result) => {
                     console.log('checkFulfill called')
                     transaction.query(getstatus371, [req.params.poNo371], (err, result) => {
@@ -204,6 +204,40 @@ app.get(`${url_start}/startTransaction371/:poNo371`, (req, res) => {
                             });
                         }
                     });
+=======
+                let check_fulfill371 = 'SELECT checkFulfill (?)';
+                transaction.query(check_fulfill371, [req.params.poNo371], (err, result) => {
+                    if (Object.values(result[0])[0] != 'Filled') {
+                        res.send('unfillable');
+                        transaction.rollback(function (err) {
+
+                        });
+
+                    } else if (result.length === 0) {
+                        res.status(404).send(`Error: POLine for poNo ${req.params.poNo371} was not found`)
+                    } else {
+                        res.send('checking');
+                        console.log('waiting for end request');
+                        app.get('/api/company/endTransaction371/:status371', (req1, res1) => {
+                            if (req1.params.status371 == 'commit') {
+                                transaction.commit(function (err) {
+                                    if (err) {
+                                        transaction.rollback(function () {
+                                            throw err;
+                                        });
+                                    }
+                                    console.log('Commit: success !');
+                                    res1.send('Commit: success !');
+                                });
+                            } else {
+                                transaction.rollback(function () {
+                                    console.log('Roll back: success !');
+                                    res1.send('Roll back: success !');
+                                });
+                            }
+                        });
+                    }
+>>>>>>> d604647cf6476f92b466fab42ed196eeb68b0711
                 });
 
             } else {
@@ -217,7 +251,6 @@ app.get(`${url_start}/startTransaction371/:poNo371`, (req, res) => {
 
 
 });
-
 
 
 app.get(`${url_start}/getPartsList17`, (req, res) => {
@@ -254,12 +287,12 @@ app.put(`${url_start}/updatePO17`, (req, res) => {
         status17: req.body.status17
     };
 
-    connection.query(sqlSelect, function(err, result) {
+    connection.query(sqlSelect, function (err, result) {
         // If PO exists
         if (result.length !== 0) {
             if (data.status17 != undefined) {
                 const sql = `call updatePO17(${data.poNo17}, "${data.status17}");`;
-                connection.query(sql, function(err, result, fields) {
+                connection.query(sql, function (err, result, fields) {
                     if (err) throw err;
                     if (data.status17 == "Cancelled") {
                         res.send(
@@ -305,11 +338,11 @@ app.put(`${url_start}/updateparts17`, (req, res) => {
         qty17: req.body.qty17
     };
 
-    connection.query(sqlSelect, function(err, result) {
+    connection.query(sqlSelect, function (err, result) {
         if (result.length !== 0) {
             if (data.currentPrice17 != undefined && data.qty17 != undefined) {
                 const sql = `UPDATE ${parts_table} SET currentPrice17= ${data.currentPrice17},  qty17=${data.qty17} WHERE partNo17=${data.partNo17};`
-                connection.query(sql, function(err, result, fields) {
+                connection.query(sql, function (err, result, fields) {
                     if (err) throw err;
                     res.send(
                         `The part with partNo17 ${data.partNo17} has been updated`
@@ -347,11 +380,11 @@ app.put(`${url_start}/updateclientuser17`, (req, res) => {
         moneyOwed17: req.body.moneyOwed17
     };
 
-    connection.query(sqlSelect, function(err, result) {
+    connection.query(sqlSelect, function (err, result) {
         if (result.length !== 0) {
             if (data.clientCompId17 != undefined && data.moneyOwed17 != undefined) {
                 const sql = `call updatecustomer17(${data.clientCompId17}, ${data.moneyOwed17});`;
-                connection.query(sql, function(err, result, fields) {
+                connection.query(sql, function (err, result, fields) {
                     if (err) throw err;
                     res.send(
                         `The client with clientCompId17 ${data.clientCompId17} has been updated`
