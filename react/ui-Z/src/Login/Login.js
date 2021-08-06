@@ -52,7 +52,7 @@ for setCookie Function
     return (
         <div>
             <div class="loginPage">
-                <h1>Client Login</h1>
+                <h1>Company Z Client Login</h1>
                 <div>
                     <label for="Username">Username</label>
                     <input type='Username' name='Username' id="Username" placeholder='Enter Username' required onChange={(e) => { setUsername(e.target.value) }} />

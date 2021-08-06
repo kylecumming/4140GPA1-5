@@ -28,7 +28,6 @@ export default class CreatePO extends Component {
             partNo: '',
             CompanyID: getCookie("userid"),
             quantity: '',
-            password: 'password',
             createError: null,
             poLines: [],
             controlId: 1,
@@ -42,8 +41,7 @@ export default class CreatePO extends Component {
         event.preventDefault();
         Axios.post('http://localhost:3001/api/client/x/postNewOrder17', {
             'clientCompId17': parseInt(this.state.CompanyID),
-            'poLines371': this.state.poLines,
-            'clientCompPassword17': this.state.password
+            'poLines371': this.state.poLines
 
         }).then((response) => {
             if (response.status === 200) {

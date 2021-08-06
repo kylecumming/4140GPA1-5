@@ -12,7 +12,10 @@ var cors = require("cors");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({
-    origin: ["http://localhost:2000", "http://localhost:2000/home"],
+    origin: ["http://localhost:2000", "http://localhost:2000/home",
+        "http://localhost:2001", "http://localhost:2001/home",
+        "http://localhost:2002", "http://localhost:2002/home",
+        "http://localhost:2003", "http://localhost:2003/home"],
     methods: ["GET", "POST", "PUT"],
     credentials: true
 }));
@@ -184,7 +187,6 @@ app.post(`${url_start}/postNewOrder17`, (req, res) => {
     // Varidate request parameter
     const schema = Joi.object({
         clientCompId17: Joi.number().integer().required(),
-        clientCompPassword17: Joi.string().required(),
         poLines371: Joi.array().required()
     });
     const { error } = schema.validate(req.body);
@@ -194,7 +196,7 @@ app.post(`${url_start}/postNewOrder17`, (req, res) => {
     }
 
     // Check if client with clientCompId17 and clientCompPassword17 exists 
-    const sqlSelect = `SELECT * FROM ${clients_table} WHERE clientCompId17 = '${req.body.clientCompId17}' AND clientCompPassword17 = '${req.body.clientCompPassword17}';`;
+    const sqlSelect = `SELECT * FROM ${clients_table} WHERE clientCompId17 = '${req.body.clientCompId17}';`;
 
     const data = {
         clientCompId17: req.body.clientCompId17,
